@@ -1,0 +1,79 @@
+:root {
+    --game-width: 1080px;
+    --game-height: 720px;
+    --default-transition: all .4s ease-in-out;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #757575;
+}
+
+header {
+    position: relative;
+    width: 16rem;
+    margin: 0 auto;
+}
+
+aside {
+    position: relative;
+    display: block;
+    width: var(--game-width);
+    margin: 0 auto;
+}
+
+.game-container,
+.test-container {
+    position: relative;
+    margin: 0 auto 1rem;
+    border: 1px solid white;
+    display: block;
+    width: 1082px;
+    height: 722px;
+}
+
+.game-container .game-canvas {
+    image-rendering: pixelated;
+}
+
+/* Menus */
+.menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--game-width);
+    height: var(--game-height);
+}
+
+.start-menu {
+    background-color: darkslategray;
+}
+
+.deck-edit-menu {
+    display: grid;
+    grid-template-columns: 0.3fr 0.7fr;
+    grid-template-rows: 1fr
+}
+
+.deck-edit-menu .deck-container {
+    background-color: rosybrown;
+    padding: 1rem;
+}
+
+.deck-edit-menu .trunk-container {
+    background-color: darksalmon;
+    padding: 1rem;
+}
+
+.cards-container {
+    width: 100%;
+    height: 90%;
+    background-color: wheat;
+}
