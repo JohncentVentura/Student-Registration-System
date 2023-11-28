@@ -1,0 +1,30 @@
+/*
+    NOTE: canvas width and height must be in px, so scaling logic in scripts would work.
+*/
+@media screen and (max-width: 1920px) {
+    :root {
+        --canvas-width: 1280px;
+        --canvas-height: 720px;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    :root {
+        --canvas-width: 854px;
+        --canvas-height: 480px;
+    }
+}
+
+@media screen and (max-width: 854px) {
+    :root {
+        --canvas-width: 640px;
+        --canvas-height: 360px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    :root {
+        --canvas-width: 426px;
+        --canvas-height: 240px;
+    }
+}

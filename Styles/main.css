@@ -1,6 +1,6 @@
 :root {
-    --game-width: 1080px;
-    --game-height: 720px;
+    --canvas-width: 0;
+    --canvas-height: 0;
     --default-transition: all .4s ease-in-out;
 }
 
@@ -14,30 +14,24 @@ body {
     background-color: #757575;
 }
 
-header {
+header, aside {
     position: relative;
+    margin: 1rem auto;
     width: 16rem;
-    margin: 0 auto;
-}
-
-aside {
-    position: relative;
-    display: block;
-    width: var(--game-width);
-    margin: 0 auto;
 }
 
 .game-container,
 .test-container {
     position: relative;
-    margin: 0 auto 1rem;
-    border: 1px solid white;
+    margin: 1rem auto;
     display: block;
-    width: 1082px;
-    height: 722px;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
 }
 
 .game-container .game-canvas {
+    width: 100%;
+    height: 100%;
     image-rendering: pixelated;
 }
 
@@ -48,32 +42,48 @@ aside {
     right: 0;
     bottom: 0;
     left: 0;
-    width: var(--game-width);
-    height: var(--game-height);
-}
-
-.start-menu {
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     background-color: darkslategray;
 }
 
+.menu button{
+    display: block;
+    width: 10rem;
+    height: 5rem;
+}
+
+.start-menu {
+    background-color: darkslateblue;
+}
+
 .deck-edit-menu {
+    z-index: -1;
     display: grid;
-    grid-template-columns: 0.3fr 0.7fr;
-    grid-template-rows: 1fr
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.4fr 0.6fr;
 }
 
 .deck-edit-menu .deck-container {
-    background-color: rosybrown;
-    padding: 1rem;
+    background-color: darksalmon;
+    padding: 0.5rem 1rem;
 }
 
 .deck-edit-menu .trunk-container {
-    background-color: darksalmon;
-    padding: 1rem;
+    background-color: rosybrown;
+    padding: 0.5rem 1rem;
 }
 
-.cards-container {
+.deck-cards, .trunk-cards {
+    padding: 0 0 0 0;
     width: 100%;
     height: 90%;
-    background-color: wheat;
+    background-color: whitesmoke;
 }
+
+.card-pos{
+    width: 6px;
+    height: 6px;
+    background-color: burlywood;
+}
+
