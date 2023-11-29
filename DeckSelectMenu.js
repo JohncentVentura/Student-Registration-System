@@ -2,7 +2,7 @@ class DeckSelectMenu extends Menu {
     constructor(params) {
         super(params);
         this.deckSelectMenuMode = null;
-        this.createDeckElement = null;
+        this.createDeckButton = null;
         this.deckElements = [];
     }
 
@@ -13,16 +13,21 @@ class DeckSelectMenu extends Menu {
     launch() {
         this.addElement("deck-select-menu",
             `<h1>Select Deck</h1>
-            <button type="button" class="create-deck">Create Deck</button>    
-            <button type="button" class="back-button">Back</button>`);
-        this.createDeckElement = document.querySelector(".create-deck");
-        this.backButtonElement = document.querySelector(".back-button");
+            <button type="button" class="create-deck-button">
+                Create Deck
+            </button>    
+            <button type="button" class="back-button">
+                Back
+            </button>`
+        );
+        this.createDeckButton = document.querySelector(".create-deck-button");
+        this.backButton = document.querySelector(".back-button");
 
-        this.createDeckElement.addEventListener("mousedown", event => {
+        this.createDeckButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
         });
 
-        this.backButtonElement.addEventListener("mousedown", event => {
+        this.backButton.addEventListener("mousedown", event => {
             if (this.deckSelectMenuMode === DeckSelectMenuMode.PlayArena) {
                 this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
             }

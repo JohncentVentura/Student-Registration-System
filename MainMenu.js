@@ -1,9 +1,8 @@
 class MainMenu extends Menu {
     constructor(params) {
         super(params);
-        this.gameEngine.previousMenu = this.gameEngine.startMenu;
-        this.playMenuElement = null;
-        this.deckMenuElement = null;
+        this.playMenuButton = null;
+        this.deckMenuButton = null;
     }
 
     update() {
@@ -12,22 +11,29 @@ class MainMenu extends Menu {
     launch() {
         this.addElement("main-menu",
             `<h1>Main Menu</h1>
-            <button type="button" class="play-menu">Play</button>
-            <button type="button" class="deck-menu">Deck</button>    
-            <button type="button" class="back-button">Back</button>`);
-        this.playMenuElement = document.querySelector(".play-menu");
-        this.deckMenuElement = document.querySelector(".deck-menu");
-        this.backButtonElement = document.querySelector(".back-button");
+            <button type="button" class="play-menu-button">
+                Play
+            </button>
+            <button type="button" class="deck-menu-button">
+                Deck
+            </button>    
+            <button type="button" class="back-button">
+                Back
+            </button>`
+        );
+        this.playMenuButton = document.querySelector(".play-menu-button");
+        this.deckMenuButton = document.querySelector(".deck-menu-button");
+        this.backButton = document.querySelector(".back-button");
 
-        this.playMenuElement.addEventListener("mousedown", event => {
+        this.playMenuButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
         })
 
-        this.deckMenuElement.addEventListener("mousedown", event => {
+        this.deckMenuButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.deckSelectMenu);
         })
 
-        this.backButtonElement.addEventListener("mousedown", event => {
+        this.backButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.startMenu);
         })
     }
