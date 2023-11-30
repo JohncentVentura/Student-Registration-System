@@ -31,7 +31,7 @@ class PlaySelectMenu extends Menu {
         })
 
         this.playAdventureButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.deckSelectMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.playAdventureMenu);
         })
 
         this.backButton.addEventListener("mousedown", event => {

@@ -3,7 +3,7 @@ class DeckSelectMenu extends Menu {
         super(params);
         this.deckSelectMenuMode = null;
         this.createDeckButton = null;
-        this.deckElements = [];
+        this.playableDeckButtons = [];
     }
 
     update() {
@@ -12,17 +12,48 @@ class DeckSelectMenu extends Menu {
 
     launch() {
         this.addElement("deck-select-menu",
-            `<h1>Select Deck</h1>
-            <button type="button" class="create-deck-button">
-                Create Deck
-            </button>    
-            <button type="button" class="back-button">
-                Back
-            </button>`
+            `<h1>Select Deck</h1>`
         );
-        this.createDeckButton = document.querySelector(".create-deck-button");
-        this.backButton = document.querySelector(".back-button");
 
+        //Creating Playable Decks Buttons
+        for(let i = 0; i < this.gameEngine.gameProgress.playableDecks; i++){
+            const deckButton = document.createElement("button");
+            deckButton.setAttribute("type", 'button');
+            deckButton.classList.add(`deck-button-${i}`);
+            deckButton.innerHTML = (`New Deck ${i}`);
+            this.element.appendChild(deckButton);
+            this.playableDeckButtons.push(deckButton);
+        }
+
+        //Creating Create New Deck Button
+        this.createDeckButton = document.createElement("button");
+        this.createDeckButton.setAttribute("type", "button");
+        this.createDeckButton.classList.add("create-deck-button");
+        this.createDeckButton.innerHTML = ("Create New Deck");
+        this.element.appendChild(this.createDeckButton);
+
+        //Creating Back Button
+        this.backButton = document.createElement("button");
+        this.backButton.setAttribute("type", "button");
+        this.backButton.classList.add("back-button");
+        this.backButton.innerHTML = ("Back");
+        this.element.appendChild(this.backButton);
+
+        this.playableDeckButtons.map(deck =>{
+            deck.addEventListener("mousedown", event => {
+                if (this.deckSelectMenuMode === DeckSelectMenuMode.PlayArena) {
+                    this.gameEngine.changeMenu(this, this.gameEngine.battleMenu);
+                }
+                else if (this.deckSelectMenuMode === DeckSelectMenuMode.PlayAdventure) {
+                    console.log("Play Adventure is still in development...");
+                    this.gameEngine.changeMenu(this, this.gameEngine.mainMenu);
+                }
+                else if (this.deckSelectMenuMode === DeckSelectMenuMode.DeckEdit) {
+                    this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
+                }
+            })
+        })
+        
         this.createDeckButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
         });
@@ -32,7 +63,7 @@ class DeckSelectMenu extends Menu {
                 this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
             }
             else if (this.deckSelectMenuMode === DeckSelectMenuMode.PlayAdventure) {
-                this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
+                this.gameEngine.changeMenu(this, this.gameEngine.playAdventureMenu);
             }
             else if (this.deckSelectMenuMode === DeckSelectMenuMode.DeckEdit) {
                 this.gameEngine.changeMenu(this, this.gameEngine.mainMenu);
@@ -43,11 +74,11 @@ class DeckSelectMenu extends Menu {
     addDeckElement() {
         let newElement = document.createElement("button");
         newElement.setAttribute("type", "button");
-        newElement.classList.add(`deck-${this.deckElements.length}`);
-        newElement.innerHTML = (`Deck ${this.deckElements.length}`);
+        newElement.classList.add(`deck-${this.playableDeckButtons.length}`);
+        newElement.innerHTML = (`Deck ${this.playableDeckButtons.length}`);
         this.element.appendChild(newElement);
-        this.deckElements.push(newElement);
-        console.log(this.deckElements);
+        this.playableDeckButtons.push(newElement);
+        console.log(this.playableDeckButtons);
     }
 }
 

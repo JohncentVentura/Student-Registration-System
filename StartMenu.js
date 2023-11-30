@@ -29,7 +29,7 @@ class StartMenu extends Menu {
         });
 
         this.continueGameButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.battleMenu);
         });
     }
 }
