@@ -6,11 +6,10 @@ class PlaySelectMenu extends Menu {
     }
 
     update() {
-
     }
 
     launch() {
-        this.addElement("main-menu",
+        this.addMenuElement("main-menu",
             `<h1>Play Menu</h1>
             <button type="button" class="play-arena-button">
                 Arena

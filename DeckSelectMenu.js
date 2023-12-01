@@ -7,11 +7,10 @@ class DeckSelectMenu extends Menu {
     }
 
     update() {
-
     }
 
     launch() {
-        this.addElement("deck-select-menu",
+        this.addMenuElement("deck-select-menu",
             `<h1>Select Deck</h1>`
         );
 

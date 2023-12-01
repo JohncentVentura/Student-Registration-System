@@ -8,7 +8,7 @@ class GameBattle{
     }
 
     launch(){
-        this.addElement("game-battle",
+        this.addMenuElement("game-battle",
             `<h3>Game Battleu</h3>`
         );
     }

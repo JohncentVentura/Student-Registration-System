@@ -1,9 +1,6 @@
 class DeckEditMenu extends Menu {
     constructor(params) {
         super(params);
-        this.cardObjects = []; //Drawn in Canvas
-        this.cardWidth = 70;
-        this.cardHeight = 100;
 
         //Deck Cover
         this.deckCoverElement = null;
@@ -14,126 +11,52 @@ class DeckEditMenu extends Menu {
         this.trunkContainer = null;
         this.deckBinder = null;
         this.trunkBinder = null;
+        this.deckBinderRect = null;
+        this.trunkBinderRect = null;
         this.slotsPerPage = 32;
         this.deckSlots = [];
         this.trunkSlots = [];
         this.deckSlotRects = [];
         this.trunkSlotRects = [];
+    }
 
-        //Mouse Variables & Events
-        this.currentCardIndex = null;
-        this.isDraggingCard = false;
-        this.startX = 0;
-        this.startY = 0;
-        this.currentCard = null;
+    onMouseMove = event => {
+        this.onMouseMoveOnCard(event);
+    }
 
-        this.isMouseInCard = (x, y, card) => {
-            let cardLeft = card.x;
-            let cardRight = card.x + card.width;
-            let cardTop = card.y;
-            let cardBottom = card.y + card.height;
+    onMouseDown = event => {
+        this.onMouseDownOnCard(event);
+    }
 
-            if (x > cardLeft && x < cardRight && y > cardTop && y < cardBottom) {
-                return true;
-            }
-
-            return false;
-        }
-
-        this.onMouseDown = (event) => {
-            event.preventDefault();
-
-            this.startX = parseInt(event.offsetX);
-            this.startY = parseInt(event.offsetY);
-
-            let index = 0;
-            this.cardObjects.map(card => {
-                if (this.isMouseInCard(this.startX, this.startY, card)) {
-                    this.currentCardIndex = index;
-                    this.isDraggingCard = true;
-                    return;
-                }
-                index++; //Increments until the if statement returns to end map()
-            });
-        }
-
-        this.onMouseUpOrOut = (event) => {
-            if (!this.isDraggingCard) {
-                return;
-            }
-            console.log(this.trunkSlotRects[0])
-            this.currentCard = this.cardObjects[this.currentCardIndex];
-            if (this.isDraggingCard && this.currentCard.x === this.currentCard.baseX && this.currentCard.y === this.currentCard.baseY) {
-                console.log("Show card " + this.currentCardIndex + " details");
-            }
-
-            event.preventDefault();
-            this.isDraggingCard = false;
-        }
-
-        this.onMouseMove = (event) => {
-            if (!this.isDraggingCard) {
-                return;
-            } else {
-                event.preventDefault();
-                let mouseX = parseInt(event.offsetX);
-                let mouseY = parseInt(event.offsetY);
-                let dx = mouseX - this.startX;
-                let dy = mouseY - this.startY;
-
-                this.currentCard = this.cardObjects[this.currentCardIndex];
-                this.currentCard.x += dx;
-                this.currentCard.y += dy;
-
-                this.drawCardObject();
-                this.startX = mouseX; //Slows the dragging
-                this.startY = mouseY;
-            }
-        }
-
-        this.isCardInDeckCover = (rect, card) => {
-            let cardLeft = card.x;
-            let cardRight = card.x + card.width;
-            let cardTop = card.y;
-            let cardBottom = card.y + card.height;
-
-            let rectLeft = rect.x;
-            let rectRight = rect.x + rect.width;
-            let rectTop = rect.y;
-            let rectBottom = rect.y + rect.height;
-
-            if (rectLeft <= cardLeft && rectRight >= cardRight && rectTop <= cardTop && rectBottom >= cardBottom) {
-                return true;
-            }
-
-            return false;
-        }
+    onMouseUp = event => {
+        this.onMouseUpOnCard(event);
     }
 
     update() {
         this.gameEngine.canvas.onmousedown = this.onMouseDown;
-        this.gameEngine.canvas.onmouseup = this.onMouseUpOrOut;
-        this.gameEngine.canvas.onmouseout = this.onMouseUpOrOut;
         this.gameEngine.canvas.onmousemove = this.onMouseMove;
+        this.gameEngine.canvas.onmouseout = this.onMouseOut;
+        this.gameEngine.canvas.onmouseup = this.onMouseUp;
 
         this.cardObjects.map(card => {
-            if (this.isCardInDeckCover(this.deckCoverRect, card) && !this.isDraggingCard) {
+            if (this.isCardInRect(card, this.deckCoverRect) && !this.isHoldingCard) { //Set card position to deck cover position
                 card.x = this.deckCoverRect.x;
                 card.y = this.deckCoverRect.y;
             }
-            else if (!this.isDraggingCard) {
+            else if (!this.isHoldingCard) { //Return to original position
                 card.x = card.baseX;
                 card.y = card.baseY;
             }
         })
 
-        this.drawCardObject();
-        console.log(this.cardObjects[0].x, this.cardObjects[0].y, this.cardObjects[0].baseX, this.cardObjects[0].baseY);
+        this.drawCardObjects();
+        this.drawHoldingCard();
+        //console.log(this.cardObjects[0].x, this.cardObjects[0].y, this.cardObjects[0].baseX, this.cardObjects[0].baseY);
     }
 
     launch() {
         //Elements
-        this.addElement("deck-edit-menu",
+        this.addMenuElement("deck-edit-menu",
             `<div class="deck-container">
                 <h3>Deck</h3>
                 <div class="deck-container-2">
@@ -157,6 +80,14 @@ class DeckEditMenu extends Menu {
         this.trunkContainer = document.querySelector(".trunk-container");
         this.deckBinder = document.querySelector(".deck-binder");
         this.trunkBinder = document.querySelector(".trunk-binder");
+
+        //Binder Rects
+        this.deckBinderRect = this.deckBinder.getBoundingClientRect();
+        this.deckBinderRect.x -= this.gameEngine.containerRect.x;
+        this.deckBinderRect.y -= this.gameEngine.containerRect.y;
+        this.trunkBinderRect = this.trunkBinder.getBoundingClientRect();
+        this.trunkBinderRect.x -= this.gameEngine.containerRect.x;
+        this.trunkBinderRect.y -= this.gameEngine.containerRect.y;
 
         //Deck Cover
         this.deckCoverElement = this.deckContainer.querySelector(".deck-cover");
@@ -182,6 +113,7 @@ class DeckEditMenu extends Menu {
         for (let i = 0; i < this.gameEngine.gameProgress.unlockedCards; i++) {
             const cardObject = new CardObject({
                 gameEngine: this.gameEngine,
+                name: "card-"+i,
                 x: this.trunkSlotRects[i].x,
                 y: this.trunkSlotRects[i].y,
                 width: this.gameEngine.cardWidth,
@@ -190,7 +122,7 @@ class DeckEditMenu extends Menu {
             });
             this.cardObjects.push(cardObject);
         }
-        
+
         this.logArrays();
 
         //window event
@@ -234,11 +166,6 @@ class DeckEditMenu extends Menu {
         console.log(this.cardObjects);
     }
 
-    drawCardObject() {
-        this.cardObjects.map(card => {
-            this.gameEngine.context.fillStyle = card.color;
-            this.gameEngine.context.fillRect(card.x, card.y, card.width, card.height);
-        });
-    }
+    
 
 }

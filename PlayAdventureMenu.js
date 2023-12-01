@@ -5,11 +5,10 @@ class PlayAdventureMenu extends Menu{
     }
 
     update(){
-        
     }
 
     launch(){
-        this.addElement("play-adventure-menu",
+        this.addMenuElement("play-adventure-menu",
             `<h3>Play Adventure Menu</h3>
             <button type="button" class="select-deck-button">
                 Select Deck

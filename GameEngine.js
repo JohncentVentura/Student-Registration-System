@@ -8,8 +8,12 @@ class GameEngine {
         this.setGameScreenSize();
         this.isGameResized = false;
 
-        this.testImg = new Image();
-        this.testImg.src = "/Assets/DemoBG1.png"
+        this.buttonDefaultImage = new Image();
+        this.buttonDefaultImage.src = "/Assets/Button Default.png";
+        this.buttonHoverImage = new Image();
+        this.buttonHoverImage.src = "/Assets/Button Hover.png";
+        this.cardSampleImage = new Image();
+        this.cardSampleImage.src = "/Assets/Card Sample.png";
     }
 
     update() {
@@ -17,7 +21,6 @@ class GameEngine {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
             //Only add/edit/remove codes below
 
-            //this.ctx.drawImage(this.testImg, 300, 0);
             if (this.currentMenu) { this.currentMenu.update(); }
 
             //Only add/edit/remove codes above
@@ -29,10 +32,11 @@ class GameEngine {
     }
 
     launch() {
-        //Checks if window & canvas is resized, so other window.addEventListener with this.isGameResized is called once per resize
+        //Checks if window & canvas is resized, so other window.addEventListener with this.isGameResized is only called once per resize
         window.addEventListener('resize', event => {
             let previousCanvasWidth = this.canvas.width;
             this.setGameScreenSize();
+
             if (previousCanvasWidth !== this.canvas.width) {
                 this.isGameResized = true;
                 previousCanvasWidth = this.canvas.width; //Calls this if statement once per resize of canvas 
@@ -51,10 +55,10 @@ class GameEngine {
         const startMenu = new StartMenu({ gameEngine: this });
         const mainMenu = new MainMenu({ gameEngine: this });
         const deckSelectMenu = new DeckSelectMenu({ gameEngine: this });
-        const deckEditMenu = new DeckEditMenu({ gameEngine: this });
+        const deckEditMenu = new DeckEditMenu({ gameEngine: this, areCardsInteractive: true });
         const playSelectMenu = new PlaySelectMenu({ gameEngine: this });
         const playAdventureMenu = new PlayAdventureMenu({ gameEngine: this });
-        const battleMenu = new BattleMenu({ gameEngine: this });
+        const battleMenu = new BattleMenu({ gameEngine: this, areCardsInteractive: true });
         const gameBattle = new GameBattle({ gameEngine: this });
         this.startMenu = startMenu;
         this.mainMenu = mainMenu;
@@ -118,14 +122,15 @@ class GameEngine {
             else if (previousMenu === this.mainMenu) {
                 this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.DeckEdit;
             }
-
-            console.log("DeckSelectMenuMode");
-            console.log(this.deckSelectMenu.deckSelectMenuMode);
         }
 
         previousMenu.element.remove();
         this.currentMenu = nextMenu;
         this.currentMenu.launch();
+        
+        if(this.currentMenu === this.deckEditMenu || this.currentMenu === this.battleMenu){ //Menu has card interactions
+            this.currentMenu.element.style.setProperty('z-index', '-1'); //Canvas will be rendered before innerHTML so canvas is interactable
+        }
     }
 
 }

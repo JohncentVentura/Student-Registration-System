@@ -25,43 +25,81 @@ class BattleMenu extends Menu {
         this.holdingCardRects = [];
         this.gameBattleButton = [];
         this.gameBattleRect = [];
+    }
 
-        //Misc
-        this.cardObjects = [];
+    onMouseMove = event => {
+        this.onMouseMoveOnCard(event);
+    }
 
-        this.isMouseInButton = (x, y, button) => {
-            if (x > button.left && x < button.right && y > button.top && y < button.bottom) {
-                return true;
-            }
-            return false;
+    onMouseDown = event => {
+        this.onMouseDownOnCard(event);
+
+        if (this.isMouseInRect(this.drawCardRect)) {
+            console.log("Draw cards")
         }
-
-        this.onMouseDown = event =>{
-            event.preventDefault();
-            let x = parseInt(event.offsetX);
-            let y = parseInt(event.offsetY);
-
-            if(this.isMouseInButton(x, y, this.drawCardRect)){
-                console.log("Drawing card from deck");
-            }
-            else if(this.isMouseInButton(x, y, this.gameBattleRect)){
-                console.log("Battle System is still in development...");
-            }
+        else if (this.isMouseInRect(this.gameBattleRect)) {
+            console.log("Start Battle")
         }
+    }
+
+    onMouseUp = event => {
+        this.onMouseUpOnCard(event);
     }
 
     update() {
-        this.drawCardObject();
-
-        this.gameEngine.context.fillStyle = `white`;
-        this.gameEngine.context.fillRect(this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
-        this.gameEngine.context.drawImage(this.gameEngine.testImg, this.gameBattleRect.x, this.gameBattleRect.y, this.gameBattleRect.width, this.gameBattleRect.height);
-
         this.gameEngine.canvas.onmousedown = this.onMouseDown;
+        this.gameEngine.canvas.onmousemove = this.onMouseMove;
+        this.gameEngine.canvas.onmouseout = this.onMouseOut;
+        this.gameEngine.canvas.onmouseup = this.onMouseUp;
+
+        //Draw the Draw Button
+        if (this.isMouseInRect(this.drawCardRect)) {
+            this.gameEngine.context.drawImage(this.gameEngine.buttonHoverImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
+        } else {
+            this.gameEngine.context.drawImage(this.gameEngine.buttonDefaultImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
+        }
+
+        //Draw Battle Button
+        if (this.isMouseInRect(this.gameBattleRect)) {
+            this.gameEngine.context.drawImage(this.gameEngine.buttonHoverImage, this.gameBattleRect.x, this.gameBattleRect.y, this.gameBattleRect.width, this.gameBattleRect.height);
+        } else {
+            this.gameEngine.context.drawImage(this.gameEngine.buttonDefaultImage, this.gameBattleRect.x, this.gameBattleRect.y, this.gameBattleRect.width, this.gameBattleRect.height);
+        }
+
+        //Cards Position to Ally Rects Position
+        this.cardObjects.map(card => {
+            if (this.isCardInRect(card, this.allyRects[0]) && !this.isHoldingCard) {
+                card.x = this.allyRects[0].x;
+                card.y = this.allyRects[0].y;
+            }
+            else if (this.isCardInRect(card, this.allyRects[1]) && !this.isHoldingCard) {
+                card.x = this.allyRects[1].x;
+                card.y = this.allyRects[1].y;
+            }
+            else if (this.isCardInRect(card, this.allyRects[2]) && !this.isHoldingCard) {
+                card.x = this.allyRects[2].x;
+                card.y = this.allyRects[2].y;
+            }
+            else if (this.isCardInRect(card, this.allyRects[3]) && !this.isHoldingCard) {
+                card.x = this.allyRects[3].x;
+                card.y = this.allyRects[3].y;
+            }
+            else if (this.isCardInRect(card, this.allyRects[4]) && !this.isHoldingCard) {
+                card.x = this.allyRects[4].x;
+                card.y = this.allyRects[4].y;
+            }
+            else if (!this.isHoldingCard) { //Return to original position
+                card.x = card.baseX;
+                card.y = card.baseY;
+            }
+        })
+
+        this.drawCardObjects();
+        this.drawHoldingCard();
     }
 
     launch() {
-        this.addElement("battle-menu",
+        this.addMenuElement("battle-menu",
             `<div class="upper-container">
                 <div class="upper-header">
                     <div>Turn 99</div>
@@ -114,7 +152,7 @@ class BattleMenu extends Menu {
             allyRect.x -= this.gameEngine.containerRect.x;
             allyRect.y -= this.gameEngine.containerRect.y;
             this.allyRects.push(allyRect);
-    
+
             const enemySlot = document.createElement("div");
             enemySlot.classList.add("creature-slot");
             enemySlot.classList.add("enemy-slot-" + i);
@@ -125,7 +163,7 @@ class BattleMenu extends Menu {
             enemyRect.x -= this.gameEngine.containerRect.x;
             enemyRect.y -= this.gameEngine.containerRect.y;
             this.enemyRects.push(enemyRect);
-        
+
             const holdingCardSlot = document.createElement("div");
             holdingCardSlot.classList.add("holding-card-slot");
             holdingCardSlot.classList.add("holding-card-slot-" + i);
@@ -146,11 +184,11 @@ class BattleMenu extends Menu {
         this.gameBattleRect.x -= this.gameEngine.containerRect.x;
         this.gameBattleRect.y -= this.gameEngine.containerRect.y;
 
-        
         //Card Objects
         for (let i = 0; i < 5; i++) {
             const cardObject = new CardObject({
                 gameEngine: this.gameEngine,
+                name: "card-" + i,
                 x: this.holdingCardRects[i].x,
                 y: this.holdingCardRects[i].y,
                 width: this.gameEngine.cardWidth,
@@ -159,13 +197,6 @@ class BattleMenu extends Menu {
             });
             this.cardObjects.push(cardObject);
         }
-        
-
-        this.cardObjects[0].color = `red`;
-        this.cardObjects[1].color = `orange`;
-        this.cardObjects[2].color = `yellow`;
-        this.cardObjects[3].color = `green`;
-        this.cardObjects[4].color = `blue`;
 
         console.log("Ally slots");
         console.log(this.allySlots);
@@ -186,8 +217,23 @@ class BattleMenu extends Menu {
 
     drawCardObject() {
         this.cardObjects.map(card => {
-            this.gameEngine.context.fillStyle = card.color;
-            this.gameEngine.context.fillRect(card.x, card.y, card.width, card.height);
+            //this.gameEngine.context.fillStyle = card.color;
+            //this.gameEngine.context.fillRect(card.x, card.y, card.width, card.height);
+
+            //*
+            this.gameEngine.context.drawImage(
+                this.gameEngine.cardSampleImage,
+                0,
+                0,
+                801,
+                1202,
+                card.x,
+                card.y,
+                card.width,
+                card.height
+            )
+            //*/
         });
     }
+
 }

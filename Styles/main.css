@@ -83,7 +83,6 @@ body {
 
 /* Deck Edit Menu*/
 .deck-edit-menu {
-    z-index: -1;
     display: grid;
     grid-template-columns: 0.3fr 0.7fr;
 }
@@ -157,10 +156,6 @@ body {
 }
 
 /* Battle Menu Upper Container */
-.battle-menu{
-    z-index: -1;
-}
-
 .battle-menu .upper-container{
     padding: 1rem;
     height: 60%;
@@ -192,13 +187,12 @@ body {
 }
 
 .creature-slot{
-    width: var(--card-width);
-    height: var(--card-height);
+    width: 99px;
+    height: 138px;
     background-color: whitesmoke;
 }
 
 /* Battle Menu Lower Container */
-
 .battle-menu .lower-container{
     padding: 1rem;
     width: 100%;
@@ -232,7 +226,7 @@ body {
 .holding-card-slot{
     width: var(--card-width);
     height: var(--card-height);
-    background-color: whitesmoke;
+    background-color: steelblue;
 }
 
 .lower-right-container{

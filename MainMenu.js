@@ -9,7 +9,7 @@ class MainMenu extends Menu {
     }
 
     launch() {
-        this.addElement("main-menu",
+        this.addMenuElement("main-menu",
             `<h1>Main Menu</h1>
             <button type="button" class="play-menu-button">
                 Play

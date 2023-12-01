@@ -4,18 +4,16 @@ class StartMenu extends Menu {
         this.gameEngine.previousMenu = null;
         this.newGameButton = null;
         this.continueGameButton = null;
-        this.newGameButtonImgSrc = "/Assets/DemoBG1.png";
     }
 
     update() {
-
     }
 
     launch() {
-        this.addElement("start-menu",
+        this.addMenuElement("start-menu",
             `<h1>Start Menu</h1>
             <button type="button" class="new-game-button">
-                <img src=${this.newGameButtonImgSrc} alt="this.newGameInputSrc1">
+                <img src=${this.gameEngine.buttonDefaultImage.src} alt="Button Default">
             </button>
             <button type="button" class="continue-game-button">
                 Continue Game
@@ -29,7 +27,7 @@ class StartMenu extends Menu {
         });
 
         this.continueGameButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.battleMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
         });
     }
 }
