@@ -124,6 +124,10 @@ class GameEngine {
             }
         }
 
+        if(this.currentMenu === this.deckEditMenu){
+            this.deckEditMenu.headerContainer.remove();
+        }
+
         previousMenu.element.remove();
         this.currentMenu = nextMenu;
         this.currentMenu.launch();

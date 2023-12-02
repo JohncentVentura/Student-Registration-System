@@ -2,10 +2,6 @@ class DeckEditMenu extends Menu {
     constructor(params) {
         super(params);
 
-        //Deck Cover
-        this.deckCoverElement = null;
-        this.deckCoverRect = null;
-
         //Elements & Rects
         this.deckContainer = null;
         this.trunkContainer = null;
@@ -13,8 +9,8 @@ class DeckEditMenu extends Menu {
         this.trunkBinder = null;
         this.deckBinderRect = null;
         this.trunkBinderRect = null;
+
         this.slotsPerPage = 32;
-        this.deckSlots = [];
         this.trunkSlots = [];
         this.deckSlotRects = [];
         this.trunkSlotRects = [];
@@ -26,9 +22,38 @@ class DeckEditMenu extends Menu {
 
     onMouseDown = event => {
         this.onMouseDownOnCard(event);
+
+        if(this.isMouseInRect(this.discardRect)){
+            this.gameEngine.changeMenu(this, this.gameEngine.mainMenu);
+        }
+    }
+
+    onMouseOut = event => {
+        console.log("Mouse is outside of canvas");
+        this.onMouseUpOnCard(event);
     }
 
     onMouseUp = event => {
+        //console.log(this.cardObjects[this.holdingCardID])
+        //console.log(this.deckBinderRect)
+        if(this.isCardInRect(this.cardObjects[this.holdingCardID], this.deckBinderRect)){
+
+            console.log(this.cardObjects[this.holdingCardID]);
+            let newCardElement = document.createElement("div");
+            newCardElement.classList.add("card");
+            newCardElement.innerHTML = (`${this.cardObjects[this.holdingCardID].name}`);
+
+            if(this.cardObjects[this.holdingCardID].tier == 1){
+                this.tierOneCards.appendChild(newCardElement);
+            }
+            else if(this.cardObjects[this.holdingCardID].tier == 2){
+                this.tierTwoCards.appendChild(newCardElement);
+            }
+            else if(this.cardObjects[this.holdingCardID].tier == 3){
+                this.tierThreeCards.appendChild(newCardElement);
+            }
+        }
+
         this.onMouseUpOnCard(event);
     }
 
@@ -39,11 +64,7 @@ class DeckEditMenu extends Menu {
         this.gameEngine.canvas.onmouseup = this.onMouseUp;
 
         this.cardObjects.map(card => {
-            if (this.isCardInRect(card, this.deckCoverRect) && !this.isHoldingCard) { //Set card position to deck cover position
-                card.x = this.deckCoverRect.x;
-                card.y = this.deckCoverRect.y;
-            }
-            else if (!this.isHoldingCard) { //Return to original position
+            if (!this.isHoldingCard) { //Return to original position
                 card.x = card.baseX;
                 card.y = card.baseY;
             }
@@ -51,29 +72,32 @@ class DeckEditMenu extends Menu {
 
         this.drawCardObjects();
         this.drawHoldingCard();
-        //console.log(this.cardObjects[0].x, this.cardObjects[0].y, this.cardObjects[0].baseX, this.cardObjects[0].baseY);
     }
 
     launch() {
         //Elements
         this.addMenuElement("deck-edit-menu",
             `<div class="deck-container">
-                <h3>Deck</h3>
-                <div class="deck-container-2">
-                    <div class="card-slot deck-cover"></div>
-                    <div>Deck Cover</div>
-                        <div class="deck-container-3">
-                            <span>Deck Name</span>
-                            <span>1 cost Unit: 0</span>
-                            <span>2 cost Unit: 0</span>
-                        </div>
-                    </div class="deck-container-2">
-                <div class="deck-binder"></div>
-            </div class="deck-container">
+                <div class="deck-binder">
+                    <div class="tier-1-cards">
+                        <h3 class="tier">Tier 1</h3>
+                    </div>
+                    <div class="tier-2-cards">
+                        <h3 class="tier">Tier 2</h3>
+                    </div>
+                    <div class="tier-3-cards">
+                        <h3 class="tier">Tier 3</h3>
+                    </div>
+                </div>
+                <div class="deck-footer">
+                    <button type="button" class="save-button">Save</button>
+                    <button type="button" class="discard-button">Discard</button>
+                    <button type="button" class="delete-button">Delete</button>
+                </div>
             </div>
             <div class="trunk-container">
-                <h3>Trunk</h3>
-                <div class="trunk-binder"></div>
+                <div class="trunk-binder">
+                </div>
             </div>`
         );
         this.deckContainer = document.querySelector(".deck-container");
@@ -89,11 +113,18 @@ class DeckEditMenu extends Menu {
         this.trunkBinderRect.x -= this.gameEngine.containerRect.x;
         this.trunkBinderRect.y -= this.gameEngine.containerRect.y;
 
-        //Deck Cover
-        this.deckCoverElement = this.deckContainer.querySelector(".deck-cover");
-        this.deckCoverRect = this.deckCoverElement.getBoundingClientRect();
-        this.deckCoverRect.x -= this.gameEngine.containerRect.x;
-        this.deckCoverRect.y -= this.gameEngine.containerRect.y;
+        //Deck Binder Cards
+        this.tierOneCards = document.querySelector(".tier-1-cards");
+        this.tierTwoCards = document.querySelector(".tier-2-cards");
+        this.tierThreeCards = document.querySelector(".tier-3-cards");
+
+
+        //Deck Container Buttons
+        //this.discardButton = document.querySelector(".discard-button");
+        //this.discardRect = this.discardButton.getBoundingClientRect();
+        this.discardRect = document.querySelector(".discard-button").getBoundingClientRect();
+        this.discardRect.x -= this.gameEngine.containerRect.x;
+        this.discardRect.y -= this.gameEngine.containerRect.y;
 
         //Trunk Cards
         for (let i = 0; i < this.slotsPerPage; i++) {
@@ -113,25 +144,63 @@ class DeckEditMenu extends Menu {
         for (let i = 0; i < this.gameEngine.gameProgress.unlockedCards; i++) {
             const cardObject = new CardObject({
                 gameEngine: this.gameEngine,
-                name: "card-"+i,
+                name: "card-" + i,
                 x: this.trunkSlotRects[i].x,
                 y: this.trunkSlotRects[i].y,
                 width: this.gameEngine.cardWidth,
                 height: this.gameEngine.cardHeight,
-                color: `green`
+                color: `green`,
+                tier: Math.floor(Math.random() * 3) + 1
             });
             this.cardObjects.push(cardObject);
         }
 
         this.logArrays();
 
+        //Header Elements
+        this.headerContainer = document.createElement("div");
+        this.headerContainer.classList.add("header-container");
+        this.gameEngine.container.appendChild(this.headerContainer);
+
+        this.deckHeaderElement = document.createElement("div");
+        this.deckHeaderElement.classList.add("deck-header-element");
+        this.deckHeaderElement.innerHTML = (
+            `
+            <form>
+                <label for="deck-name-id">Deck Name</label>
+                <textarea id="deck-name-id" name="deck-name-id" rows="1" cols="50" placeholder="Deck Name"></textarea>
+            </form>
+            `
+        );
+        this.headerContainer.appendChild(this.deckHeaderElement);
+
+        this.trunkHeaderElement = document.createElement("div");
+        this.trunkHeaderElement.classList.add("trunk-header-element");
+        this.trunkHeaderElement.innerHTML = (
+            `
+            <div class="trunk-buttons search-buttons">
+                <button type="button" class="search-button"> Search </button>
+                <form>
+                    <textarea id="deck-name-id" name="deck-name-id" rows="1" cols="50" placeholder="Search Card">
+                    </textarea>
+                </form>
+            </div>
+            <div class="trunk-buttons page-buttons">
+                <button type="button" class="trunk-button"> < </button>
+                <button type="button" class="trunk-button"> > </button>
+            </div>
+            `
+        );
+        this.headerContainer.appendChild(this.trunkHeaderElement);
+
         //window event
         window.addEventListener('resize', event => {
             if (this.gameEngine.isGameResized && this != undefined) {
-                //Deck Cover
+                /*Deck Cover
                 this.deckCoverRect = this.deckCoverElement.getBoundingClientRect();
                 this.deckCoverRect.x -= this.gameEngine.containerRect.x;
                 this.deckCoverRect.y -= this.gameEngine.containerRect.y;
+                //*/
 
                 //Trunk Rects
                 this.trunkSlotRects = [];
@@ -166,6 +235,6 @@ class DeckEditMenu extends Menu {
         console.log(this.cardObjects);
     }
 
-    
+
 
 }

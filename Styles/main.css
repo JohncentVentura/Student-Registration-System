@@ -1,10 +1,10 @@
 :root {
     /* Initialize values in GameEngine.js*/
-    --canvas-width: 0; 
+    --canvas-width: 0;
     --canvas-height: 0;
-    --card-width: 0; 
+    --card-width: 0;
     --card-height: 0;
-    
+
     --color-grey: #757575;
     --default-transition: all .4s ease-in-out;
 }
@@ -81,58 +81,118 @@ body {
     opacity: 0.6;
 }
 
-/* Deck Edit Menu*/
+/* Deck Edit Menu - Canvas & Headers */
 .deck-edit-menu {
+    padding: 3.5rem 0 0 0;
+    width: 100%;
+    height: 100%;
     display: grid;
-    grid-template-columns: 0.3fr 0.7fr;
+    grid-template-columns: 25% 75%;
 }
 
-.deck-edit-menu .deck-container {
-    padding: 0.5rem 1rem;
+.header-container {
+    position: absolute;
+    z-index: 1;
+    border-bottom: 1px solid black;
+    width: 100%;
+    height: 3.5rem;
+    display: grid;
+    grid-template-columns: 25% 75%;
+}
+
+.deck-header-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: darksalmon;
 }
 
-.deck-container-2{
+.deck-header-element form {
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.deck-container-2 .card-slot{
-    width: 99px; /*TESTING*/
-    height: 138px;
-    background-color: burlywood;
+.deck-header-element label {
+    margin: 0 1% 0 0;
+    display: block;
 }
 
-.deck-container-3{
+.deck-header-element form textarea,
+.trunk-header-element .trunk-buttons form textarea {
+    width: 12rem;
+    height: 2rem
+}
+
+.header-container button {
+    display: block;
+    width: 4rem;
+    height: 2rem;
+    cursor: pointer;
+}
+
+.trunk-header-element {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-end;
-}
-
-.deck-container-3 span{
-    display: inline-block;
-    color: white;
-}
-
-.deck-binder{
-    padding: 2% 0 0 2%;
-    width: 100%;
-    height: 70%;
-    background-color: whitesmoke;   
-}
-
-.deck-edit-menu .trunk-container {
-    padding: 0.5rem 1rem;
+    justify-content: space-between;
+    align-items: center;
     background-color: rosybrown;
 }
 
-.trunk-binder{
-    padding: 2% 0 0 2%;
+.trunk-buttons {
+    display: flex;
+    padding: 0 2%;
+}
+
+/* Deck Edit Menu - Deck Container */
+.deck-edit-menu .deck-container {
+    padding: 4%;
+    background-color: darksalmon;
+}
+
+.deck-binder {
+    padding: 4%;
     width: 100%;
     height: 90%;
-    background-color: whitesmoke;   
+    background-color: whitesmoke;
+    color: black;
+}
+
+.deck-binder .tier{
+    background-color: teal;
+}
+
+.deck-binder .card{
+    background-color:cadetblue
+}
+
+.deck-footer {
+    width: 100%;
+    height: 10%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    justify-content: center;
+    align-items: center;
+}
+
+.deck-edit-menu button {
+    display: block;
+    width: 4rem;
+    height: 2.5rem;
+    cursor: pointer;
+}
+
+/* Deck Edit Menu - Trunk Container */
+
+.deck-edit-menu .trunk-container {
+    padding: 1.4%;
+    background-color: rosybrown;
+}
+
+.trunk-binder {
+    padding: 2% 0 0 2%;
+    width: 100%;
+    height: 100%;
+    background-color: whitesmoke;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -144,32 +204,30 @@ body {
     background-color: burlywood;
 }
 
-/* Play Menu */
-.play-adventure-menu{
+/* Play Menu & Game Battle */
+.play-adventure-menu {
     background-color: darkred;
 }
 
-
-/* Game Battle */
-.game-battle{
+.game-battle {
     background-color: darkblue;
 }
 
 /* Battle Menu Upper Container */
-.battle-menu .upper-container{
+.battle-menu .upper-container {
     padding: 1rem;
     height: 60%;
     background-color: sandybrown;
 }
 
-.upper-container .upper-header{
+.upper-container .upper-header {
     width: 100%;
     height: 10%;
     display: flex;
     justify-content: space-evenly;
 }
 
-.upper-container .creatures-container{
+.upper-container .creatures-container {
     width: 100%;
     height: 90%;
     display: grid;
@@ -178,7 +236,8 @@ body {
     align-items: center;
 }
 
-.allies-container, .enemies-container{
+.allies-container,
+.enemies-container {
     display: grid;
     grid-template-columns: repeat(5, var(--card-width));
     grid-template-rows: 1fr;
@@ -186,22 +245,22 @@ body {
     gap: 4%;
 }
 
-.creature-slot{
+.creature-slot {
     width: 99px;
     height: 138px;
     background-color: whitesmoke;
 }
 
 /* Battle Menu Lower Container */
-.battle-menu .lower-container{
+.battle-menu .lower-container {
     padding: 1rem;
     width: 100%;
     height: 40%;
-    background-color:steelblue;
+    background-color: steelblue;
     display: flex;
 }
 
-.lower-left-container{
+.lower-left-container {
     width: 15%;
     height: 100%;
     display: flex;
@@ -210,7 +269,7 @@ body {
     align-items: center;
 }
 
-.lower-center-container{
+.lower-center-container {
     width: 70%;
     height: 100%;
     background-color: darkblue;
@@ -223,13 +282,13 @@ body {
     gap: 6%;
 }
 
-.holding-card-slot{
+.holding-card-slot {
     width: var(--card-width);
     height: var(--card-height);
     background-color: steelblue;
 }
 
-.lower-right-container{
+.lower-right-container {
     width: 15%;
     height: 100%;
     display: flex;
@@ -237,3 +296,5 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+/* Text Area Menu */
