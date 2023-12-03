@@ -17,6 +17,7 @@
 
 body {
     background-color: var(--color-grey);
+    font-size: 1rem;
 }
 
 .game-title,
@@ -26,20 +27,21 @@ body {
     width: 16rem;
 }
 
-.game-container {
+.game-container{
     position: relative;
     margin: 1rem auto 0;
-    display: block;
     width: var(--canvas-width);
     height: var(--canvas-height);
 }
 
-.game-container .game-canvas {
+.game-canvas {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     image-rendering: pixelated;
 }
 
@@ -50,8 +52,13 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: black;
-    color: white;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+    background-color: cadetblue;
+}
+
+.start-menu {
+    background-color: darkslateblue;
 }
 
 .menu button {
@@ -62,159 +69,156 @@ body {
     cursor: pointer;
 }
 
-/* Start Menu */
-.start-menu {
-    background-color: darkslateblue;
-}
-
-.start-menu button {
+.menu button:hover {
     background-color: var(--color-grey);
+    color: white;
 }
 
-.start-menu button img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.start-menu button img:hover {
-    opacity: 0.6;
-}
-
-/* Deck Edit Menu - Canvas & Headers */
-.deck-edit-menu {
-    padding: 3.5rem 0 0 0;
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: 25% 75%;
-}
-
-.header-container {
+/* Card Display */
+.card-background{
     position: absolute;
-    z-index: 1;
-    border-bottom: 1px solid black;
-    width: 100%;
-    height: 3.5rem;
-    display: grid;
-    grid-template-columns: 25% 75%;
-}
-
-.deck-header-element {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: darksalmon;
-}
-
-.deck-header-element form {
-    display: flex;
-    align-items: center;
-}
-
-.deck-header-element label {
-    margin: 0 1% 0 0;
-    display: block;
-}
-
-.deck-header-element form textarea,
-.trunk-header-element .trunk-buttons form textarea {
-    width: 12rem;
-    height: 2rem
-}
-
-.header-container button {
-    display: block;
-    width: 4rem;
-    height: 2rem;
-    cursor: pointer;
-}
-
-.trunk-header-element {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rosybrown;
-}
-
-.trunk-buttons {
-    display: flex;
-    padding: 0 2%;
-}
-
-/* Deck Edit Menu - Deck Container */
-.deck-edit-menu .deck-container {
-    padding: 4%;
-    background-color: darksalmon;
-}
-
-.deck-binder {
-    padding: 4%;
-    width: 100%;
-    height: 90%;
-    background-color: whitesmoke;
-    color: black;
-}
-
-.deck-binder .tier{
-    background-color: teal;
-}
-
-.deck-binder .card{
-    background-color:cadetblue
-}
-
-.deck-footer {
-    width: 100%;
-    height: 10%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(1, 1fr);
-    justify-content: center;
-    align-items: center;
-}
-
-.deck-edit-menu button {
-    display: block;
-    width: 4rem;
-    height: 2.5rem;
-    cursor: pointer;
-}
-
-/* Deck Edit Menu - Trunk Container */
-
-.deck-edit-menu .trunk-container {
-    padding: 1.4%;
-    background-color: rosybrown;
-}
-
-.trunk-binder {
-    padding: 2% 0 0 2%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: whitesmoke;
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 50, 0.5);
 }
 
-.trunk-binder .card-slot {
+.card-background .card-display{
+    border: 4px solid silver;
+    width: 30%;
+    height: 90%;
+    background-color: darkgoldenrod;
+    color: white;
+}
+
+.card-display .card-image{
+    width: 100%;
+    height: 70%;
+    object-fit: fill;
+    image-rendering: pixelated;
+}
+
+.card-display .card-name{
+    background-color:darkgoldenrod;
+}
+
+.card-stats-container{
+    width: 100%;
+    display: flex;
+}
+
+/* Deck Select Menu */
+.deck-element{
+    margin: 2% 0;
     width: var(--card-width);
     height: var(--card-height);
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.deck-element .deck-image{
+    width: 100%;
+    height: 70%;
+    object-fit: fill;
+    image-rendering: pixelated;
+}
+
+.deck-element .deck-button-container{
+    width: 100%;
+    height: 30%;
+}
+
+.deck-element .deck-button-container .deck-button{
+    width: 100%;
+    height: 50%;
+}
+
+/* Deck Edit Menu */
+.deck-edit-menu {
+    padding: 1.2%;
+    background-color: rosybrown;
+}
+
+.deck-edit-header {
+    width: 100%;
+    height: 10%;
+    background-color: rosybrown;
+    display: flex;
+    align-items: center;
+}
+
+.deck-edit-header button {
+    margin: 0;
+    width: var(--card-height);
+    height: 60%;
+    cursor: pointer;
+}
+
+.deck-edit-header form {
+    width: var(--card-height);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deck-edit-header textarea {
+    width: var(--card-height);
+    height: 60%;
+}
+
+.deck-edit-menu .deck-edit-trunk {
+    padding: 0 1.2% 1.2% 1.2%;
+    width: 100%;
+    height: 90%;
     background-color: burlywood;
+    overflow-y: scroll;
 }
 
-/* Play Menu & Game Battle */
-.play-adventure-menu {
-    background-color: darkred;
+.tier-number {
+    margin: 1.2% 0;
 }
 
-.game-battle {
-    background-color: darkblue;
+.tier-one-units,
+.tier-two-units {
+    display: grid;
+    grid-template-columns: repeat(8, var(--card-width));
+    grid-template-rows: repeat(1, var(--card-height));
+    gap: 1.2% 1.2%;
+}
+
+.tier-three-units,
+.tier-one-items,
+.tier-two-items {
+    display: grid;
+    grid-template-columns: repeat(4, var(--card-width));
+    grid-template-rows: repeat(1, var(--card-height));
+    gap: 1.2% 1.2%;
+}
+
+.tier-three-items {
+    display: grid;
+    grid-template-columns: repeat(2, var(--card-width));
+    grid-template-rows: repeat(1, var(--card-height));
+    gap: 1.2% 1.2%;
+}
+
+.card-element {
+    width: var(--card-width);
+    height: var(--card-height);
+    object-fit: cover;
+    image-rendering: pixelated;
 }
 
 /* Battle Menu Upper Container */
-.battle-menu .upper-container {
+.play-battle-menu .upper-container {
     padding: 1rem;
     height: 60%;
     background-color: sandybrown;
@@ -252,7 +256,7 @@ body {
 }
 
 /* Battle Menu Lower Container */
-.battle-menu .lower-container {
+.play-battle-menu .lower-container {
     padding: 1rem;
     width: 100%;
     height: 40%;
@@ -296,5 +300,3 @@ body {
     justify-content: center;
     align-items: center;
 }
-
-/* Text Area Menu */

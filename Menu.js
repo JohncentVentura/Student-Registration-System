@@ -22,7 +22,7 @@ class Menu {
         //Overrided by child class
     }
 
-    addMenuElement(className, innerHTML) {
+    createMenuElement(className, innerHTML) {
         this.element = document.createElement("div");
         this.element.classList.add("menu");
         this.element.classList.add(className);
@@ -36,7 +36,56 @@ class Menu {
 
         //Prevents context menu when right clicking in the HTML element
         this.element.addEventListener("contextmenu", event => {
-            if (event.button === 2) event.preventDefault();
+            //if (event.button === 2) event.preventDefault();
+        })
+    }
+
+    createCardDisplayElement(imageSrc, name, tier, power, health, ability) {
+        const cardBackground = document.createElement("div");
+        cardBackground.classList.add("card-background");
+
+        const cardDisplay = document.createElement("div");
+        cardDisplay.classList.add("card-display");
+        cardBackground.appendChild(cardDisplay);
+
+        const cardImage = document.createElement("img");
+        cardImage.classList.add("card-image");
+        cardImage.setAttribute("src", `${imageSrc}`);
+        cardDisplay.appendChild(cardImage);
+
+        const cardName = document.createElement("div");
+        cardName.classList.add("card-name");
+        cardName.innerHTML = (`${name}`);
+        cardDisplay.appendChild(cardName);
+        
+        const cardStatsContainer = document.createElement("div");
+        cardStatsContainer.classList.add("card-stats-container");
+        cardDisplay.appendChild(cardStatsContainer);
+        
+        const cardTier = document.createElement("div");
+        cardTier.classList.add("card-tier");
+        cardTier.innerHTML = (`⭐ ${tier}`);
+        cardStatsContainer.appendChild(cardTier);
+
+        const cardAttack = document.createElement("div");
+        cardAttack.classList.add("card-attack");
+        cardAttack.innerHTML = (`⚔️ ${power}`);
+        cardStatsContainer.appendChild(cardAttack);
+
+        const cardHealth = document.createElement("div");
+        cardHealth.classList.add("card-health");
+        cardHealth.innerHTML = (`❤️ ${health}`);
+        cardStatsContainer.appendChild(cardHealth);
+
+        const cardAbility = document.createElement("div");
+        cardAbility.classList.add("card-ability");
+        cardAbility.innerHTML = (`${ability}`);
+        cardDisplay.appendChild(cardAbility);
+
+        this.gameEngine.container.appendChild(cardBackground);
+
+        cardBackground.addEventListener("mousedown", event => {
+            cardBackground.remove();
         })
     }
 
@@ -122,7 +171,7 @@ class Menu {
         } else {
             if (this.isHoldingCard && this.cardObjects[this.holdingCardID].x === this.cardObjects[this.holdingCardID].baseX
                 && this.cardObjects[this.holdingCardID].y === this.cardObjects[this.holdingCardID].baseY) {
-                console.log("Show card " + this.cardObjects[this.holdingCardID].name + " details");
+                //console.log("Show card " + this.cardObjects[this.holdingCardID].name + " details");
             }
 
             event.preventDefault();
@@ -168,5 +217,42 @@ class Menu {
                 this.cardObjects[this.holdingCardID].height
             );
         }
+    }
+
+    tryDrawCardObject(card){
+        if (this.cardObjects[this.holdingCardID]) {
+            this.gameEngine.context.drawImage(
+                this.gameEngine.cardSampleImage,
+                0,
+                0,
+                801,
+                1202,
+                this.cardObjects[this.holdingCardID].x,
+                this.cardObjects[this.holdingCardID].y,
+                this.cardObjects[this.holdingCardID].width,
+                this.cardObjects[this.holdingCardID].height
+            );
+        }
+
+        this.gameEngine.context.fillStyle = 'blue';
+        let tierRectX = card.x;
+        let tierRectY = card.y;
+        let tierRectWidth = card.width / 2;
+        let tierRectHeight = card.height / 4;
+        this.gameEngine.context.fillRect(tierRectX, tierRectY, tierRectWidth, tierRectHeight);
+
+        this.gameEngine.context.fillStyle = 'orange';
+        let attackRectX = card.x;
+        let attackRectY = card.y + (card.height - (card.height / 4));
+        let attackRectWidth = card.width / 2;
+        let attackRectHeight = card.height / 4;
+        this.gameEngine.context.fillRect(attackRectX, attackRectY, attackRectWidth, attackRectHeight);
+
+        this.gameEngine.context.fillStyle = 'red';
+        let healthRectX = card.x + attackRectWidth;
+        let healthRectY = card.y + + (card.height - (card.height / 4));
+        let healthRectWidth = card.width / 2;
+        let healthRectHeight = card.height / 4;
+        this.gameEngine.context.fillRect(healthRectX, healthRectY, healthRectWidth, healthRectHeight);
     }
 }

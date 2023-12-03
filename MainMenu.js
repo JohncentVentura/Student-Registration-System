@@ -1,35 +1,35 @@
 class MainMenu extends Menu {
     constructor(params) {
         super(params);
-        this.playMenuButton = null;
-        this.deckMenuButton = null;
+        this.playSelectButton = null;
+        this.deckSelectButton = null;
     }
 
     update() {
     }
 
     launch() {
-        this.addMenuElement("main-menu",
+        this.createMenuElement("main-menu",
             `<h1>Main Menu</h1>
-            <button type="button" class="play-menu-button">
+            <button type="button" class="play-select-button">
                 Play
             </button>
-            <button type="button" class="deck-menu-button">
+            <button type="button" class="deck-select-button">
                 Deck
             </button>    
             <button type="button" class="back-button">
                 Back
             </button>`
         );
-        this.playMenuButton = document.querySelector(".play-menu-button");
-        this.deckMenuButton = document.querySelector(".deck-menu-button");
+        this.playSelectButton = document.querySelector(".play-select-button");
+        this.deckSelectButton = document.querySelector(".deck-select-button");
         this.backButton = document.querySelector(".back-button");
 
-        this.playMenuButton.addEventListener("mousedown", event => {
+        this.playSelectButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
         })
 
-        this.deckMenuButton.addEventListener("mousedown", event => {
+        this.deckSelectButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.deckSelectMenu);
         })
 

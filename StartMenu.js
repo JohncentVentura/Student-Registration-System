@@ -10,10 +10,10 @@ class StartMenu extends Menu {
     }
 
     launch() {
-        this.addMenuElement("start-menu",
+        this.createMenuElement("start-menu",
             `<h1>Start Menu</h1>
             <button type="button" class="new-game-button">
-                <img src=${this.gameEngine.buttonDefaultImage.src} alt="Button Default">
+                New Game
             </button>
             <button type="button" class="continue-game-button">
                 Continue Game
@@ -27,7 +27,7 @@ class StartMenu extends Menu {
         });
 
         this.continueGameButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.deckEditMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.playBattleMenu);
         });
     }
 }

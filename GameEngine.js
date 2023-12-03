@@ -14,6 +14,8 @@ class GameEngine {
         this.buttonHoverImage.src = "/Assets/Button Hover.png";
         this.cardSampleImage = new Image();
         this.cardSampleImage.src = "/Assets/Card Sample.png";
+        this.pikachuImage = new Image();
+        this.pikachuImage.src = "/Assets/Pikachu.png";
     }
 
     update() {
@@ -49,24 +51,23 @@ class GameEngine {
         this.gameProgress = new GameProgress({ gameEngine: this });
         this.gameProgress.unlockedCards = 12;
         this.gameProgress.playableDecks = 3;
+        this.deckOne = [Units.Bulbasaur, Units.Charmander, Units.Squirtle, Units.Pikachu, Units.Ghastly];
         //*/
 
         //Initializating and assigning Menu Classes
         const startMenu = new StartMenu({ gameEngine: this });
         const mainMenu = new MainMenu({ gameEngine: this });
+        const playSelectMenu = new PlaySelectMenu({ gameEngine: this });
         const deckSelectMenu = new DeckSelectMenu({ gameEngine: this });
         const deckEditMenu = new DeckEditMenu({ gameEngine: this, areCardsInteractive: true });
-        const playSelectMenu = new PlaySelectMenu({ gameEngine: this });
-        const playAdventureMenu = new PlayAdventureMenu({ gameEngine: this });
-        const battleMenu = new BattleMenu({ gameEngine: this, areCardsInteractive: true });
+        const playBattleMenu = new PlayBattleMenu({ gameEngine: this, areCardsInteractive: true });
         const gameBattle = new GameBattle({ gameEngine: this });
         this.startMenu = startMenu;
         this.mainMenu = mainMenu;
+        this.playSelectMenu = playSelectMenu;
         this.deckSelectMenu = deckSelectMenu;
         this.deckEditMenu = deckEditMenu;
-        this.playSelectMenu = playSelectMenu;
-        this.playAdventureMenu = playAdventureMenu;
-        this.battleMenu = battleMenu;
+        this.playBattleMenu = playBattleMenu;
         this.gameBattle = gameBattle;
 
         //Loading Complete, Starting Game
@@ -114,13 +115,10 @@ class GameEngine {
     changeMenu(previousMenu, nextMenu) {
         if (nextMenu === this.deckSelectMenu) {
             if (previousMenu === this.playSelectMenu) {
-                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.PlayArena;
-            }
-            else if (previousMenu === this.playAdventureMenu) {
-                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.PlayAdventure;
+                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.PlayDeck;
             }
             else if (previousMenu === this.mainMenu) {
-                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.DeckEdit;
+                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.ViewDeck;
             }
         }
 
@@ -131,10 +129,6 @@ class GameEngine {
         previousMenu.element.remove();
         this.currentMenu = nextMenu;
         this.currentMenu.launch();
-        
-        if(this.currentMenu === this.deckEditMenu || this.currentMenu === this.battleMenu){ //Menu has card interactions
-            this.currentMenu.element.style.setProperty('z-index', '-1'); //Canvas will be rendered before innerHTML so canvas is interactable
-        }
     }
 
 }
