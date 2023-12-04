@@ -6,6 +6,10 @@
     --card-height: 0;
 
     --color-grey: #757575;
+    --color-white: white;
+    --color-red: #d95f4c;
+
+    --card-border-radius: 10%;
     --default-transition: all .4s ease-in-out;
 }
 
@@ -74,6 +78,10 @@ body {
     color: white;
 }
 
+img{
+    image-rendering: pixelated;
+}
+
 /* Card Display */
 .card-background{
     position: absolute;
@@ -84,84 +92,84 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    background-color: rgba(0, 0, 50, 0.5);
+    background-color: rgba(0, 0, 50, 0.3);
 }
 
 .card-background .card-display{
-    border: 4px solid silver;
+    border: 6px solid var(--color-red);
+    border-radius: var(--card-border-radius);
     width: 30%;
-    height: 90%;
-    background-color: darkgoldenrod;
-    color: white;
-}
-
-.card-display .card-image{
-    width: 100%;
     height: 70%;
-    object-fit: fill;
-    image-rendering: pixelated;
-}
-
-.card-display .card-name{
-    background-color:darkgoldenrod;
-}
-
-.card-stats-container{
-    width: 100%;
-    display: flex;
-}
-
-/* Deck Select Menu */
-.deck-element{
-    margin: 2% 0;
-    width: var(--card-width);
-    height: var(--card-height);
-    background: white;
+    background-color: var(--color-white);
+    color: white;
     display: flex;
     flex-direction: column;
 }
 
-.deck-element .deck-image{
+.card-display .card-image{
     width: 100%;
-    height: 70%;
-    object-fit: fill;
+    height: 60%;
+    object-fit: contain;
     image-rendering: pixelated;
 }
 
-.deck-element .deck-button-container{
+.card-display .card-stats-container{
+    background-color: var(--color-red);
     width: 100%;
-    height: 30%;
+    height: 15%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
 }
 
-.deck-element .deck-button-container .deck-button{
-    width: 100%;
-    height: 50%;
+.card-display .card-stats-container .card-stat{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Deck Edit Menu */
-.deck-edit-menu {
+.card-display .card-effects{
+    border-bottom-left-radius: 100%;
+    border-bottom-right-radius: 100%;
+    width: 100%;
+    height: 25%;
+    background-color: var(--color-red);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-background .card-button{
+    width: 15%;
+    height: 10%;
+}
+
+/* Deck Menu */
+.deck-menu {
     padding: 1.2%;
-    background-color: rosybrown;
+    background-color: #865f0e;
 }
 
-.deck-edit-header {
+.deck-menu-header {
+    border: 10px solid #e6e15a;
     width: 100%;
     height: 10%;
-    background-color: rosybrown;
+    background-color: #e3bf39;
     display: flex;
     align-items: center;
 }
 
-.deck-edit-header button {
+.deck-menu-header button {
     margin: 0;
     width: var(--card-height);
     height: 60%;
     cursor: pointer;
 }
 
-.deck-edit-header form {
+.deck-menu-header form {
     width: var(--card-height);
     height: 100%;
     display: flex;
@@ -169,55 +177,72 @@ body {
     align-items: center;
 }
 
-.deck-edit-header textarea {
+.deck-menu-header textarea {
     width: var(--card-height);
     height: 60%;
 }
 
-.deck-edit-menu .deck-edit-trunk {
+.deck-menu .deck-menu-trunk {
+    border: 10px solid #4ed0b3;
     padding: 0 1.2% 1.2% 1.2%;
     width: 100%;
     height: 90%;
-    background-color: burlywood;
+    background-color: #2da89e;
+    color: white;
     overflow-y: scroll;
 }
 
-.tier-number {
+.rank-number {
     margin: 1.2% 0;
 }
 
-.tier-one-units,
-.tier-two-units {
-    display: grid;
-    grid-template-columns: repeat(8, var(--card-width));
-    grid-template-rows: repeat(1, var(--card-height));
-    gap: 1.2% 1.2%;
+.rank-one-units,
+.rank-two-units,
+.rank-three-units {
+    display: flex;
+    flex-flow: row wrap;
 }
 
-.tier-three-units,
-.tier-one-items,
-.tier-two-items {
+.rank-one-items,
+.rank-two-items,
+.rank-three-items{
     display: grid;
     grid-template-columns: repeat(4, var(--card-width));
     grid-template-rows: repeat(1, var(--card-height));
     gap: 1.2% 1.2%;
 }
 
-.tier-three-items {
-    display: grid;
-    grid-template-columns: repeat(2, var(--card-width));
-    grid-template-rows: repeat(1, var(--card-height));
-    gap: 1.2% 1.2%;
-}
-
 .card-element {
+    margin: 0.5%;
+    border: 3px solid #d95f4c;
+    border-radius: var(--card-border-radius);
     width: var(--card-width);
     height: var(--card-height);
-    object-fit: cover;
-    image-rendering: pixelated;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Battle Menu Upper Container */
+.card-element:hover{
+    border: 3px solid white;
+    background-color:#d95f4c;
+}
+
+.card-element  .card-image {
+    width: 100%;
+    height: 80%;
+    object-fit: contain;
+    image-rendering: pixelated
+}
+
+.card-element .card-stats{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Play Menu Upper Container */
 .play-battle-menu .upper-container {
     padding: 1rem;
     height: 60%;
@@ -255,7 +280,7 @@ body {
     background-color: whitesmoke;
 }
 
-/* Battle Menu Lower Container */
+/* Play Menu Lower Container */
 .play-battle-menu .lower-container {
     padding: 1rem;
     width: 100%;

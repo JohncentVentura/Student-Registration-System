@@ -3,8 +3,7 @@ class GameEngine {
         this.container = document.querySelector(".game-container");
         this.canvas = this.container.querySelector(".game-canvas");
         this.context = this.canvas.getContext("2d");
-        this.context.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
-
+        
         this.setGameScreenSize();
         this.isGameResized = false;
 
@@ -12,15 +11,12 @@ class GameEngine {
         this.buttonDefaultImage.src = "/Assets/Button Default.png";
         this.buttonHoverImage = new Image();
         this.buttonHoverImage.src = "/Assets/Button Hover.png";
-        this.cardSampleImage = new Image();
-        this.cardSampleImage.src = "/Assets/Card Sample.png";
-        this.pikachuImage = new Image();
-        this.pikachuImage.src = "/Assets/Pikachu.png";
     }
 
     update() {
         const gameLoop = () => {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.context.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
             //Only add/edit/remove codes below
 
             if (this.currentMenu) { this.currentMenu.update(); }
@@ -51,23 +47,47 @@ class GameEngine {
         this.gameProgress = new GameProgress({ gameEngine: this });
         this.gameProgress.unlockedCards = 12;
         this.gameProgress.playableDecks = 3;
-        this.deckOne = [Units.Bulbasaur, Units.Charmander, Units.Squirtle, Units.Pikachu, Units.Ghastly];
+
+        this.rankOneUnits = [
+            Units.Bulbasaur, Units.Charmander, Units.Squirtle, 
+            Units.Chikorita, Units.Cyndaquil, Units.Totodile,
+            Units.Treecko, Units.Torchic, Units.Mudkip,
+            Units.Turtwig, Units.Chimchar, Units.Piplup
+        ];
+        this.rankTwoUnits = [
+            Units.Ivysaur, Units.Charmeleon, Units.Wartortle,
+            Units.Bayleef, Units.Quilava, Units.Croconaw,
+            Units.Grovyle, Units.Combusken, Units.Marshtomp,
+            Units.Grotle, Units.Monferno, Units.Prinplup
+        ];
+        this.rankThreeUnits = [
+            Units.Venusaur, Units.Charizard, Units.Blastoise,
+            Units.Meganium, Units.Typlosion, Units.Feraligatr,
+            Units.Sceptile, Units.Blaziken, Units.Swampert,
+            Units.Torterra, Units.Infernape, Units.Empoleon
+        ];
+
+        this.playingRankOneUnits = [];
+        this.playingRankTwoUnits = [];
+        this.playingRankThreeUnits = [];
+
+        this.playingDeck = [];
+        this.holdingCards = [];
+        this.playingUnits = [];
+        
+
         //*/
 
         //Initializating and assigning Menu Classes
-        const startMenu = new StartMenu({ gameEngine: this });
-        const mainMenu = new MainMenu({ gameEngine: this });
-        const playSelectMenu = new PlaySelectMenu({ gameEngine: this });
-        const deckSelectMenu = new DeckSelectMenu({ gameEngine: this });
-        const deckEditMenu = new DeckEditMenu({ gameEngine: this, areCardsInteractive: true });
-        const playBattleMenu = new PlayBattleMenu({ gameEngine: this, areCardsInteractive: true });
-        const gameBattle = new GameBattle({ gameEngine: this });
+        const startMenu = new StartMenu(this);
+        const mainMenu = new MainMenu(this);
+        const playMenu = new PlayMenu(this);
+        const deckMenu = new DeckMenu(this);   
+        const gameBattle = new GameBattle(this);
         this.startMenu = startMenu;
         this.mainMenu = mainMenu;
-        this.playSelectMenu = playSelectMenu;
-        this.deckSelectMenu = deckSelectMenu;
-        this.deckEditMenu = deckEditMenu;
-        this.playBattleMenu = playBattleMenu;
+        this.playMenu = playMenu;
+        this.deckMenu = deckMenu;
         this.gameBattle = gameBattle;
 
         //Loading Complete, Starting Game
@@ -113,19 +133,17 @@ class GameEngine {
     }
 
     changeMenu(previousMenu, nextMenu) {
+        /*
         if (nextMenu === this.deckSelectMenu) {
             if (previousMenu === this.playSelectMenu) {
                 this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.PlayDeck;
             }
             else if (previousMenu === this.mainMenu) {
-                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.ViewDeck;
+                this.deckSelectMenu.deckSelectMenuMode = DeckSelectMenuMode.EditDeck;
             }
         }
-
-        if(this.currentMenu === this.deckEditMenu){
-            this.deckEditMenu.headerContainer.remove();
-        }
-
+        */
+        
         previousMenu.element.remove();
         this.currentMenu = nextMenu;
         this.currentMenu.launch();

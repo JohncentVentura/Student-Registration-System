@@ -7,12 +7,14 @@ class CardObject{
         this.height = params.height;
 
         this.image = new Image();
-        this.name = params.name || "unknown";
-        this.imageSrc = params.imageSrc || "";
-        this.tier = params.tier || 0;
-        this.attack = params.attack || 0;
-        this.health = params.health || 1;
-        this.effectDesc = params.effectDesc || "";
+        this.name = params.name;
+        this.image.src = params.imageSrc;
+        this.rank = params.rank;
+        this.race = params.race;
+        this.role = params.role;
+        this.attack = params.attack;
+        this.health = params.health;
+        this.effectDesc = params.effectDesc;
         this.effectFunc = params.effectFunc;
 
         this.baseX = this.x;

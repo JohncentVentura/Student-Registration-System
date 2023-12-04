@@ -26,11 +26,11 @@ class MainMenu extends Menu {
         this.backButton = document.querySelector(".back-button");
 
         this.playSelectButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.playSelectMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.playMenu);
         })
 
         this.deckSelectButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.deckSelectMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.deckMenu);
         })
 
         this.backButton.addEventListener("mousedown", event => {

@@ -1,6 +1,6 @@
 class GameBattle{
-    constructor(params) {
-        this.gameEngine = params.gameEngine;
+    constructor(gameEngine) {
+        this.gameEngine = gameEngine;
     }
     
     update(){

@@ -1,7 +1,6 @@
 class StartMenu extends Menu {
     constructor(params) {
         super(params);
-        this.gameEngine.previousMenu = null;
         this.newGameButton = null;
         this.continueGameButton = null;
     }
@@ -27,7 +26,7 @@ class StartMenu extends Menu {
         });
 
         this.continueGameButton.addEventListener("mousedown", event => {
-            this.gameEngine.changeMenu(this, this.gameEngine.playBattleMenu);
+            this.gameEngine.changeMenu(this, this.gameEngine.playMenu);
         });
     }
 }
