@@ -9,10 +9,10 @@ class CardObject{
         this.image = new Image();
         this.name = params.name;
         this.image.src = params.imageSrc;
-        this.rank = params.rank;
-        this.race = params.race;
-        this.role = params.role;
-        this.attack = params.attack;
+        this.tier = params.tier;
+        this.type1 = params.type1;
+        this.type2 = params.type2;
+        this.power = params.power;
         this.health = params.health;
         this.effectDesc = params.effectDesc;
         this.effectFunc = params.effectFunc;

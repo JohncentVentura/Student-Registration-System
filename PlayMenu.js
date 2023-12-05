@@ -11,7 +11,7 @@ class PlayMenu extends Menu {
         this.holdingCardRects = [];
 
         this.holdingCardData = []; //Blueprint for Objects
-        this.holdingCardObjects = []; //Rendered on the screen
+        this.holdingCardObjects = []; //Rendered on the canvas
         this.playingCardData = [];
         this.playingCardObjects = [];
 
@@ -80,10 +80,10 @@ class PlayMenu extends Menu {
             this.createCardDisplayElement(
                 this.holdingCardObjects[this.holdingCardID].image.src,
                 this.holdingCardObjects[this.holdingCardID].name,
-                this.holdingCardObjects[this.holdingCardID].rank,
-                this.holdingCardObjects[this.holdingCardID].race,
-                this.holdingCardObjects[this.holdingCardID].role,
-                this.holdingCardObjects[this.holdingCardID].attack,
+                this.holdingCardObjects[this.holdingCardID].tier,
+                this.holdingCardObjects[this.holdingCardID].type1,
+                this.holdingCardObjects[this.holdingCardID].type2,
+                this.holdingCardObjects[this.holdingCardID].power,
                 this.holdingCardObjects[this.holdingCardID].health,
                 this.holdingCardObjects[this.holdingCardID].effectDesc
             );
@@ -246,12 +246,12 @@ class PlayMenu extends Menu {
 
         //Deck & Cards Setup
         //* TEMPORARY!!! playingUnits will be initialized later on
-        this.gameEngine.playingRankOneUnits = this.gameEngine.rankOneUnits;
-        this.gameEngine.playingRankTwoUnits = this.gameEngine.rankTwoUnits;
-        this.gameEngine.playingRankThreeUnits = this.gameEngine.rankThreeUnits;
+        this.gameEngine.playingTier1Units = this.gameEngine.unlockedTier1Units;
+        this.gameEngine.playingTier2Units = this.gameEngine.unlockedTier2Units;
+        this.gameEngine.playingTier3Units = this.gameEngine.unlockedTier3Units;
         //*/
 
-        this.gameEngine.playingDeck = this.gameEngine.playingRankOneUnits;
+        this.gameEngine.playingUnits = this.gameEngine.playingTier1Units;
         this.rollHoldingCards();
     }
 
@@ -315,7 +315,7 @@ class PlayMenu extends Menu {
         this.holdingCardObjects = [];
 
         for (let i = 0; i < 4; i++) {
-            this.holdingCardData.push(this.gameEngine.playingDeck[Math.floor(Math.random() * this.gameEngine.playingDeck.length)]);
+            this.holdingCardData.push(this.gameEngine.playingUnits[Math.floor(Math.random() * this.gameEngine.playingUnits.length)]);
         }
 
         for (let i = 0; i < 4; i++) {
@@ -328,10 +328,10 @@ class PlayMenu extends Menu {
 
                 name: this.holdingCardData[i].name,
                 imageSrc: this.holdingCardData[i].imageSrc,
-                rank: this.holdingCardData[i].rank,
-                race: this.holdingCardData[i].race,
-                role: this.holdingCardData[i].role,
-                attack: this.holdingCardData[i].attack,
+                tier: this.holdingCardData[i].tier,
+                type1: this.holdingCardData[i].type1,
+                type2: this.holdingCardData[i].type2,
+                power: this.holdingCardData[i].power,
                 health: this.holdingCardData[i].health,
                 effectDesc: this.holdingCardData[i].effectDesc,
                 effectFunc: this.holdingCardData[i].effectFunc

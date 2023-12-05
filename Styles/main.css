@@ -1,7 +1,7 @@
 :root {
     /* Initialize values in GameEngine.js*/
-    --canvas-width: 0;
-    --canvas-height: 0;
+    --game-width: 0;
+    --game-height: 0;
     --card-width: 0;
     --card-height: 0;
 
@@ -24,28 +24,19 @@ body {
     font-size: 1rem;
 }
 
-.game-title,
-.game-details {
-    position: relative;
-    margin: 1rem auto;
-    width: 16rem;
-}
-
 .game-container{
     position: relative;
-    margin: 1rem auto 0;
-    width: var(--canvas-width);
-    height: var(--canvas-height);
+    margin: 1.5% auto;
+    width: var(--game-width);
+    height: var(--game-height);
 }
 
 .game-canvas {
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
     left: 0;
-    width: var(--canvas-width);
-    height: var(--canvas-height);
+    width: var(--game-width);
+    height: var(--game-height);
     image-rendering: pixelated;
 }
 
@@ -53,11 +44,9 @@ body {
 .menu {
     position: absolute;
     top: 0;
-    right: 0;
-    bottom: 0;
     left: 0;
-    width: var(--canvas-width);
-    height: var(--canvas-height);
+    width: var(--game-width);
+    height: var(--game-height);
     background-color: cadetblue;
 }
 
@@ -121,11 +110,13 @@ img{
     width: 100%;
     height: 15%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
+    gap: 0 10%;
 }
 
-.card-display .card-stats-container .card-stat{
+.card-display .card-stats-container .card-center{
+    grid-column: 1 / span 3;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -192,20 +183,20 @@ img{
     overflow-y: scroll;
 }
 
-.rank-number {
+.tier-number {
     margin: 1.2% 0;
 }
 
-.rank-one-units,
-.rank-two-units,
-.rank-three-units {
+.tier-one-units,
+.tier-two-units,
+.tier-three-units {
     display: flex;
     flex-flow: row wrap;
 }
 
-.rank-one-items,
-.rank-two-items,
-.rank-three-items{
+.tier-one-items,
+.tier-two-items,
+.tier-three-items{
     display: grid;
     grid-template-columns: repeat(4, var(--card-width));
     grid-template-rows: repeat(1, var(--card-height));
@@ -219,6 +210,7 @@ img{
     width: var(--card-width);
     height: var(--card-height);
     background-color: white;
+    color: black;
     display: flex;
     flex-direction: column;
 }
@@ -226,6 +218,7 @@ img{
 .card-element:hover{
     border: 3px solid white;
     background-color:#d95f4c;
+    color: white;
 }
 
 .card-element  .card-image {

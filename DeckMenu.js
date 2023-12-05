@@ -2,12 +2,12 @@ class DeckMenu extends Menu {
     constructor(params) {
         super(params);
 
-        this.rankOneUnitElements = [];
-        this.rankOneItemElements = [];
-        this.rankTwoUnitElements = [];
-        this.rankTwoItemElements = [];
-        this.rankThreeUnitElements = [];
-        this.rankThreeItemElements = [];
+        this.tierOneUnitElements = [];
+        this.tierOneItemElements = [];
+        this.tierTwoUnitElements = [];
+        this.tierTwoItemElements = [];
+        this.tierThreeUnitElements = [];
+        this.tierThreeItemElements = [];
     }
 
     update() {
@@ -24,88 +24,102 @@ class DeckMenu extends Menu {
                 <button type="button" class="deck-save-button"> Save </button>
                 <button type="button" class="deck-discard-button"> Discard </button>
                 <button type="button" class="deck-delete-button"> Delete </button>
-            </div>
+            </div>  
             <div class="deck-menu-trunk">
-                <div class="rank-one-elements">
-                    <h3 class="rank-number"> Rank 1 Units </h3>
-                    <div class="rank-one-units"></div>
-                    <h3 class="rank-number"> Rank 1 Items </h3>
-                    <div class="rank-one-items"></div>
+                <div>
+                    <h3 class="tier-number"> Tier 1 Units </h3>
+                    <div class="tier-one-units"></div>
+                    <h3 class="tier-number"> Tier 1 Items </h3>
+                    <div class="tier-one-items"></div>
                 </div>
-                <div class="rank-two-elements">
-                    <h3 class="rank-number"> Rank 2 Units </h3>
-                    <div class="rank-two-units"></div>
-                    <h3 class="rank-number"> Rank 2 Items </h3>
+                <div>
+                    <h3 class="tier-number"> Tier 2 Units </h3>
+                    <div class="tier-two-units"></div>
+                    <h3 class="tier-number"> Tier 2 Items </h3>
                     <div class="rank-two-items"></div>
                 </div>
-                <div class="rank-three-elements">
-                    <h3 class="rank-number"> Rank 3 Units </h3>
-                    <div class="rank-three-units"></div>
-                    <h3 class="rank-number"> Rank 3 Items </h3>
-                    <div class="rank-three-items"></div>
+                <div>
+                    <h3 class="tier-number"> Tier 3 Units </h3>
+                    <div class="tier-three-units"></div>
+                    <h3 class="tier-number"> Tier 3 Items </h3>
+                    <div class="tier-three-items"></div>
                 </div>
             </div>
             `
         );
-        this.deckSaveButton = document.querySelector(".deck-save-button");
-        this.rankOneUnitsDiv = document.querySelector(".rank-one-units");
-        this.rankOneItemsDiv = document.querySelector(".rank-one-items");
-        this.rankTwoUnitsDiv = document.querySelector(".rank-two-units");
-        this.rankTwoItemsDiv = document.querySelector(".rank-two-items");
-        this.rankThreeUnitsDiv = document.querySelector(".rank-three-units");
-        this.rankThreeItemsDiv = document.querySelector(".rank-three-items");
+        this.tierOneUnitsDiv = document.querySelector(".tier-one-units");
+        this.tierOneItemsDiv = document.querySelector(".tier-one-items");
+        this.tierTwoUnitsDiv = document.querySelector(".tier-two-units");
+        this.tierTwoItemsDiv = document.querySelector(".tier-two-items");
+        this.tierThreeUnitsDiv = document.querySelector(".tier-three-units");
+        this.tierThreeItemsDiv = document.querySelector(".tier-three-items");
 
         //Creating Units Element & Adding Event Listener to each Units Element
         for (let i = 0; i < 12; i++) {
-            const rankOneUnitElement = this.getCreatedCardElement(this.gameEngine.rankOneUnits[i].imageSrc, 
-                this.gameEngine.rankOneUnits[i].race, this.gameEngine.rankOneUnits[i].role);
-            this.rankOneUnitsDiv.appendChild(rankOneUnitElement);
-            this.rankOneUnitElements.push(rankOneUnitElement);
+            const rankOneUnitElement = this.getCreatedCardElement(
+                this.gameEngine.rankOneUnits[i].imageSrc, 
+                this.gameEngine.rankOneUnits[i].type1, 
+                this.gameEngine.rankOneUnits[i].type2, 
+                this.gameEngine.rankOneUnits[i].power,
+                this.gameEngine.rankOneUnits[i].health
+            );
+            this.tierOneUnitsDiv.appendChild(rankOneUnitElement);
+            this.tierOneUnitElements.push(rankOneUnitElement);
 
-            this.rankOneUnitElements[i].addEventListener("mousedown", event => {
+            this.tierOneUnitElements[i].addEventListener("mousedown", event => {
                 this.createCardDisplayElement(
                     this.gameEngine.rankOneUnits[i].imageSrc,
                     this.gameEngine.rankOneUnits[i].name,
-                    this.gameEngine.rankOneUnits[i].rank,
-                    this.gameEngine.rankOneUnits[i].race,
-                    this.gameEngine.rankOneUnits[i].role,
-                    this.gameEngine.rankOneUnits[i].attack,
+                    this.gameEngine.rankOneUnits[i].tier, 
+                    this.gameEngine.rankOneUnits[i].type1, 
+                    this.gameEngine.rankOneUnits[i].type2, 
+                    this.gameEngine.rankOneUnits[i].power,
                     this.gameEngine.rankOneUnits[i].health,
                     this.gameEngine.rankOneUnits[i].effectDesc
                 );
             });
             
-            const rankTwoUnitElement = this.getCreatedCardElement(this.gameEngine.rankTwoUnits[i].imageSrc, 
-                this.gameEngine.rankTwoUnits[i].race, this.gameEngine.rankTwoUnits[i].role);
-            this.rankTwoUnitsDiv.appendChild(rankTwoUnitElement);
-            this.rankTwoUnitElements.push(rankTwoUnitElement);
+            const rankTwoUnitElement = this.getCreatedCardElement(
+                this.gameEngine.rankTwoUnits[i].imageSrc, 
+                this.gameEngine.rankTwoUnits[i].type1, 
+                this.gameEngine.rankTwoUnits[i].type2, 
+                this.gameEngine.rankTwoUnits[i].power,
+                this.gameEngine.rankTwoUnits[i].health
+            );
+            this.tierTwoUnitsDiv.appendChild(rankTwoUnitElement);
+            this.tierTwoUnitElements.push(rankTwoUnitElement);
 
-            this.rankTwoUnitElements[i].addEventListener("mousedown", event => {
+            this.tierTwoUnitElements[i].addEventListener("mousedown", event => {
                 this.createCardDisplayElement(
                     this.gameEngine.rankTwoUnits[i].imageSrc,
                     this.gameEngine.rankTwoUnits[i].name,
-                    this.gameEngine.rankTwoUnits[i].rank,
-                    this.gameEngine.rankTwoUnits[i].race,
-                    this.gameEngine.rankTwoUnits[i].role,
-                    this.gameEngine.rankTwoUnits[i].attack,
+                    this.gameEngine.rankTwoUnits[i].tier, 
+                    this.gameEngine.rankTwoUnits[i].type1, 
+                    this.gameEngine.rankTwoUnits[i].type2,
+                    this.gameEngine.rankTwoUnits[i].power,
                     this.gameEngine.rankTwoUnits[i].health,
                     this.gameEngine.rankTwoUnits[i].effectDesc
                 );
             });
 
-            const rankThreeUnitElement = this.getCreatedCardElement(this.gameEngine.rankThreeUnits[i].imageSrc, 
-                this.gameEngine.rankThreeUnits[i].race, this.gameEngine.rankThreeUnits[i].role);
-            this.rankThreeUnitsDiv.appendChild(rankThreeUnitElement);
-            this.rankThreeUnitElements.push(rankThreeUnitElement);
+            const rankThreeUnitElement = this.getCreatedCardElement(
+                this.gameEngine.rankThreeUnits[i].imageSrc, 
+                this.gameEngine.rankThreeUnits[i].type1, 
+                this.gameEngine.rankThreeUnits[i].type2, 
+                this.gameEngine.rankThreeUnits[i].power,
+                this.gameEngine.rankThreeUnits[i].health
+            );
+            this.tierThreeUnitsDiv.appendChild(rankThreeUnitElement);
+            this.tierThreeUnitElements.push(rankThreeUnitElement);
 
-            this.rankThreeUnitElements[i].addEventListener("mousedown", event => {
+            this.tierThreeUnitElements[i].addEventListener("mousedown", event => {
                 this.createCardDisplayElement(
                     this.gameEngine.rankThreeUnits[i].imageSrc,
                     this.gameEngine.rankThreeUnits[i].name,
-                    this.gameEngine.rankThreeUnits[i].rank,
-                    this.gameEngine.rankThreeUnits[i].race,
-                    this.gameEngine.rankThreeUnits[i].role,
-                    this.gameEngine.rankThreeUnits[i].attack,
+                    this.gameEngine.rankThreeUnits[i].tier, 
+                    this.gameEngine.rankThreeUnits[i].type1, 
+                    this.gameEngine.rankThreeUnits[i].type2, 
+                    this.gameEngine.rankThreeUnits[i].power,
                     this.gameEngine.rankThreeUnits[i].health,
                     this.gameEngine.rankThreeUnits[i].effectDesc
                 );
@@ -129,7 +143,7 @@ class DeckMenu extends Menu {
         */
     }
 
-    getCreatedCardElement(imageSrc, race, role) {
+    getCreatedCardElement(imageSrc, type1, type2, power, health) {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");
 
@@ -142,15 +156,25 @@ class DeckMenu extends Menu {
         cardStats.classList.add("card-stats");
         cardElement.appendChild(cardStats);
 
-        const cardRace = document.createElement("div");
-        cardRace.classList.add("card-race");
-        cardRace.innerHTML = (`${Types.RaceIcon[race]}`);
-        cardStats.appendChild(cardRace);
+        const cardType1 = document.createElement("div");
+        cardType1.classList.add("card-type-1");
+        cardType1.innerHTML = (`${TYPES.TYPES_ICONS[type1]}`);
+        cardStats.appendChild(cardType1);
 
-        const cardRole = document.createElement("div");
-        cardRole.classList.add("card-role");
-        cardRole.innerHTML = (`${Types.RoleIcon[role]}`);
-        cardStats.appendChild(cardRole);
+        const cardType2 = document.createElement("div");
+        cardType2.classList.add("card-type-2");
+        cardType2.innerHTML = (`${TYPES.TYPES_ICONS[type2]}`);
+        cardStats.appendChild(cardType2);
+
+        const cardPower = document.createElement("div");
+        cardPower.classList.add("card-power");
+        cardPower.innerHTML = (`${power}⚔️`);
+        cardStats.appendChild(cardPower);
+
+        const cardHealth = document.createElement("div");
+        cardHealth.classList.add("card-health");
+        cardHealth.innerHTML = (`${health}❤️`);
+        cardStats.appendChild(cardHealth);
 
         /*
         const cardAttack = document.createElement("div");

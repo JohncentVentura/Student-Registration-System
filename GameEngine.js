@@ -1,11 +1,12 @@
 class GameEngine {
-    constructor() {
+    constructor(gameWidth, gameHeight) {
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
+
         this.container = document.querySelector(".game-container");
         this.canvas = this.container.querySelector(".game-canvas");
         this.context = this.canvas.getContext("2d");
-        
         this.setGameScreenSize();
-        this.isGameResized = false;
 
         this.buttonDefaultImage = new Image();
         this.buttonDefaultImage.src = "/Assets/Button Default.png";
@@ -30,6 +31,7 @@ class GameEngine {
     }
 
     launch() {
+        /*
         //Checks if window & canvas is resized, so other window.addEventListener with this.isGameResized is only called once per resize
         window.addEventListener('resize', event => {
             let previousCanvasWidth = this.canvas.width;
@@ -42,47 +44,48 @@ class GameEngine {
                 this.isGameResized = false;
             }
         })
+        */
 
         //* TESTING GameProgress with initial value
         this.gameProgress = new GameProgress({ gameEngine: this });
         this.gameProgress.unlockedCards = 12;
         this.gameProgress.playableDecks = 3;
 
-        this.rankOneUnits = [
-            Units.Bulbasaur, Units.Charmander, Units.Squirtle, 
+        this.unlockedTier1Units = [
+            Units.Bulbasaur, Units.Charmander, Units.Squirtle,
             Units.Chikorita, Units.Cyndaquil, Units.Totodile,
             Units.Treecko, Units.Torchic, Units.Mudkip,
             Units.Turtwig, Units.Chimchar, Units.Piplup
         ];
-        this.rankTwoUnits = [
+        this.unlockedTier2Units = [
             Units.Ivysaur, Units.Charmeleon, Units.Wartortle,
             Units.Bayleef, Units.Quilava, Units.Croconaw,
             Units.Grovyle, Units.Combusken, Units.Marshtomp,
             Units.Grotle, Units.Monferno, Units.Prinplup
         ];
-        this.rankThreeUnits = [
+        this.unlockedTier3Units = [
             Units.Venusaur, Units.Charizard, Units.Blastoise,
             Units.Meganium, Units.Typlosion, Units.Feraligatr,
             Units.Sceptile, Units.Blaziken, Units.Swampert,
             Units.Torterra, Units.Infernape, Units.Empoleon
         ];
 
-        this.playingRankOneUnits = [];
-        this.playingRankTwoUnits = [];
-        this.playingRankThreeUnits = [];
+        //Units that will be used when playing
+        this.playingTier1Units = [];
+        this.playingTier2Units = [];
+        this.playingTier3Units = [];
 
-        this.playingDeck = [];
+        //Units that can be drawn when playing, add units with different tier here
+        this.playingUnits = [];
         this.holdingCards = [];
         this.playingUnits = [];
-        
-
         //*/
 
         //Initializating and assigning Menu Classes
         const startMenu = new StartMenu(this);
         const mainMenu = new MainMenu(this);
         const playMenu = new PlayMenu(this);
-        const deckMenu = new DeckMenu(this);   
+        const deckMenu = new DeckMenu(this);
         const gameBattle = new GameBattle(this);
         this.startMenu = startMenu;
         this.mainMenu = mainMenu;
@@ -97,31 +100,11 @@ class GameEngine {
     }
 
     setGameScreenSize() { //Sets width and height of elements in HTML & CSS
-        //Sets canvas width and height attributes in HTML, sets --canvas-width and --canvas-height variables in CSS 
-        if (window.innerWidth <= 1920 && window.innerWidth >= 1280) {
-            this.canvas.setAttribute("width", "1280");
-            this.canvas.setAttribute("height", "720");
-            document.documentElement.style.setProperty('--canvas-width', '1280px');
-            document.documentElement.style.setProperty('--canvas-height', '720px');
-        }
-        else if (window.innerWidth <= 1280 && window.innerWidth >= 854) {
-            this.canvas.setAttribute("width", "854");
-            this.canvas.setAttribute("height", "480");
-            document.documentElement.style.setProperty('--canvas-width', '854px');
-            document.documentElement.style.setProperty('--canvas-height', '480px');
-        }
-        else if (window.innerWidth <= 854 && window.innerWidth >= 640) {
-            this.canvas.setAttribute("width", "640");
-            this.canvas.setAttribute("height", "360");
-            document.documentElement.style.setProperty('--canvas-width', '640px');
-            document.documentElement.style.setProperty('--canvas-height', '360px');
-        }
-        else {
-            this.canvas.setAttribute("width", "426");
-            this.canvas.setAttribute("height", "240");
-            document.documentElement.style.setProperty('--canvas-width', '426px');
-            document.documentElement.style.setProperty('--canvas-height', '240px');
-        }
+        //Sets canvas width and height attributes in HTML, sets --game-width and --game-height variables in CSS 
+        document.documentElement.style.setProperty("--game-width", `${this.gameWidth}px`);
+        document.documentElement.style.setProperty("--game-height", `${this.gameHeight}px`);
+        this.canvas.setAttribute("width", `${this.gameWidth}`);
+        this.canvas.setAttribute("height", `${this.gameHeight}`);
 
         //Set width and height for CardObjects.js, sets --card-width and --card-height variables in CSS 
         this.cardWidth = this.canvas.width * 0.07;
@@ -143,7 +126,7 @@ class GameEngine {
             }
         }
         */
-        
+
         previousMenu.element.remove();
         this.currentMenu = nextMenu;
         this.currentMenu.launch();

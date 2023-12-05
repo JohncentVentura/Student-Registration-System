@@ -33,7 +33,7 @@ class Menu {
         })
     }
 
-    createCardDisplayElement(imageSrc, name, rank, race, role, power, health, effect) {
+    createCardDisplayElement(imageSrc, name, tier, type1, type2, power, health, effect) {
         const cardBackground = document.createElement("div");
         cardBackground.classList.add("card-background");
 
@@ -52,33 +52,36 @@ class Menu {
 
         const cardName = document.createElement("div");
         cardName.classList.add("card-stat");
+        cardName.classList.add("card-center");
         cardName.innerHTML = (`Name: ${name}`);
         cardStatsContainer.appendChild(cardName);
 
-        const cardRank = document.createElement("div");
-        cardRank.classList.add("card-stat");
-        cardRank.innerHTML = (`Rank: ${rank}⭐`);
-        cardStatsContainer.appendChild(cardRank);
+        const cardTypes = document.createElement("div");
+        cardTypes.classList.add("card-stat");
+        cardTypes.classList.add("card-center");
+        if (type2 == TYPES.TYPES_NAMES.NONE) {
+            cardTypes.innerHTML = (`Type: ${TYPES.TYPES_NAMES[type1]} ${TYPES.TYPES_ICONS[type1]}`);
 
-        const cardAttack = document.createElement("div");
-        cardAttack.classList.add("card-stat");
-        cardAttack.innerHTML = (`Attack: ${power} ⚔️`);
-        cardStatsContainer.appendChild(cardAttack);
+        } else {
+            cardTypes.innerHTML = (`Type: ${TYPES.TYPES_NAMES[type1]} ${TYPES.TYPES_ICONS[type1]} 
+            / ${TYPES.TYPES_NAMES[type2]} ${TYPES.TYPES_ICONS[type2]}`);
+        }
+        cardStatsContainer.appendChild(cardTypes);
 
-        const cardRace = document.createElement("div");
-        cardRace.classList.add("card-stat");
-        cardRace.innerHTML = (`Race: ${race} ${Types.RaceIcon[race]}`);
-        cardStatsContainer.appendChild(cardRace);
+        const cardTier = document.createElement("div");
+        cardTier.classList.add("card-stat");
+        cardTier.innerHTML = (`⭐Tier: ${tier}`);
+        cardStatsContainer.appendChild(cardTier);
+
+        const cardPower = document.createElement("div");
+        cardPower.classList.add("card-stat");
+        cardPower.innerHTML = (`⚔️Power: ${power}`);
+        cardStatsContainer.appendChild(cardPower);
 
         const cardHealth = document.createElement("div");
         cardHealth.classList.add("card-stat");
-        cardHealth.innerHTML = (`Health: ${health} ❤️`);
+        cardHealth.innerHTML = (`❤️Health: ${health}`);
         cardStatsContainer.appendChild(cardHealth);
-        
-        const cardRole = document.createElement("div");
-        cardRole.classList.add("card-stat");
-        cardRole.innerHTML = (`Role: ${role} ${Types.RoleIcon[role]}`);
-        cardStatsContainer.appendChild(cardRole);
 
         const cardEffects = document.createElement("div");
         cardEffects.classList.add("card-effects");
@@ -100,7 +103,6 @@ class Menu {
     }
 
     /* For menus where cards has interactions */
-
     onMouseOut = event => {
         console.log("Mouse is outside of canvas")
     }
