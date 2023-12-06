@@ -57,8 +57,8 @@ window.Units = {
         tier: 1,
         type1: TYPES.TYPES_NAMES.PLANT,
         type2: TYPES.TYPES_NAMES.POISON,
-        power: 2,
-        health: 2,
+        power: 22,
+        health: 22,
         effectDesc: "Vine Whip",
         effectFunc: () => {
             console.log(this.name + " uses " + this.effectDesc);

@@ -2,11 +2,11 @@ class DeckMenu extends Menu {
     constructor(params) {
         super(params);
 
-        this.tierOneUnitElements = [];
+        this.tier1UnitElements = [];
         this.tierOneItemElements = [];
-        this.tierTwoUnitElements = [];
+        this.tier2UnitElements = [];
         this.tierTwoItemElements = [];
-        this.tierThreeUnitElements = [];
+        this.tier3UnitElements = [];
         this.tierThreeItemElements = [];
     }
 
@@ -26,102 +26,104 @@ class DeckMenu extends Menu {
                 <button type="button" class="deck-delete-button"> Delete </button>
             </div>  
             <div class="deck-menu-trunk">
-                <div>
                     <h3 class="tier-number"> Tier 1 Units </h3>
                     <div class="tier-one-units"></div>
                     <h3 class="tier-number"> Tier 1 Items </h3>
                     <div class="tier-one-items"></div>
-                </div>
-                <div>
+                
                     <h3 class="tier-number"> Tier 2 Units </h3>
                     <div class="tier-two-units"></div>
                     <h3 class="tier-number"> Tier 2 Items </h3>
-                    <div class="rank-two-items"></div>
-                </div>
-                <div>
+                    <div class="tier-two-items"></div>
+                
                     <h3 class="tier-number"> Tier 3 Units </h3>
                     <div class="tier-three-units"></div>
                     <h3 class="tier-number"> Tier 3 Items </h3>
                     <div class="tier-three-items"></div>
-                </div>
+                
             </div>
             `
         );
-        this.tierOneUnitsDiv = document.querySelector(".tier-one-units");
+        this.deckDiscardButton = document.querySelector(".deck-discard-button");
+        this.deckDiscardButton.addEventListener("mousedown", event => {
+            this.gameEngine.changeMenu(this, this.gameEngine.playMenu);
+        })
+
+        this.tier1UnitsDiv = document.querySelector(".tier-one-units");
         this.tierOneItemsDiv = document.querySelector(".tier-one-items");
-        this.tierTwoUnitsDiv = document.querySelector(".tier-two-units");
+        this.tier2UnitsDiv = document.querySelector(".tier-two-units");
         this.tierTwoItemsDiv = document.querySelector(".tier-two-items");
-        this.tierThreeUnitsDiv = document.querySelector(".tier-three-units");
+        this.tier3UnitsDiv = document.querySelector(".tier-three-units");
         this.tierThreeItemsDiv = document.querySelector(".tier-three-items");
 
         //Creating Units Element & Adding Event Listener to each Units Element
         for (let i = 0; i < 12; i++) {
-            const rankOneUnitElement = this.getCreatedCardElement(
-                this.gameEngine.rankOneUnits[i].imageSrc, 
-                this.gameEngine.rankOneUnits[i].type1, 
-                this.gameEngine.rankOneUnits[i].type2, 
-                this.gameEngine.rankOneUnits[i].power,
-                this.gameEngine.rankOneUnits[i].health
+            const tier1UnitElement = this.getCreatedCardElement(
+                this.gameEngine.unlockedTier1Units[i].imageSrc,
+                this.gameEngine.unlockedTier1Units[i].type1,
+                this.gameEngine.unlockedTier1Units[i].type2,
+                this.gameEngine.unlockedTier1Units[i].power,
+                this.gameEngine.unlockedTier1Units[i].health
             );
-            this.tierOneUnitsDiv.appendChild(rankOneUnitElement);
-            this.tierOneUnitElements.push(rankOneUnitElement);
+            this.tier1UnitsDiv.appendChild(tier1UnitElement);
+            this.tier1UnitElements.push(tier1UnitElement);
 
-            this.tierOneUnitElements[i].addEventListener("mousedown", event => {
+            this.tier1UnitElements[i].addEventListener("mousedown", event => {
                 this.createCardDisplayElement(
-                    this.gameEngine.rankOneUnits[i].imageSrc,
-                    this.gameEngine.rankOneUnits[i].name,
-                    this.gameEngine.rankOneUnits[i].tier, 
-                    this.gameEngine.rankOneUnits[i].type1, 
-                    this.gameEngine.rankOneUnits[i].type2, 
-                    this.gameEngine.rankOneUnits[i].power,
-                    this.gameEngine.rankOneUnits[i].health,
-                    this.gameEngine.rankOneUnits[i].effectDesc
-                );
-            });
-            
-            const rankTwoUnitElement = this.getCreatedCardElement(
-                this.gameEngine.rankTwoUnits[i].imageSrc, 
-                this.gameEngine.rankTwoUnits[i].type1, 
-                this.gameEngine.rankTwoUnits[i].type2, 
-                this.gameEngine.rankTwoUnits[i].power,
-                this.gameEngine.rankTwoUnits[i].health
-            );
-            this.tierTwoUnitsDiv.appendChild(rankTwoUnitElement);
-            this.tierTwoUnitElements.push(rankTwoUnitElement);
-
-            this.tierTwoUnitElements[i].addEventListener("mousedown", event => {
-                this.createCardDisplayElement(
-                    this.gameEngine.rankTwoUnits[i].imageSrc,
-                    this.gameEngine.rankTwoUnits[i].name,
-                    this.gameEngine.rankTwoUnits[i].tier, 
-                    this.gameEngine.rankTwoUnits[i].type1, 
-                    this.gameEngine.rankTwoUnits[i].type2,
-                    this.gameEngine.rankTwoUnits[i].power,
-                    this.gameEngine.rankTwoUnits[i].health,
-                    this.gameEngine.rankTwoUnits[i].effectDesc
+                    this.gameEngine.unlockedTier1Units[i].imageSrc,
+                    this.gameEngine.unlockedTier1Units[i].name,
+                    this.gameEngine.unlockedTier1Units[i].tier,
+                    this.gameEngine.unlockedTier1Units[i].type1,
+                    this.gameEngine.unlockedTier1Units[i].type2,
+                    this.gameEngine.unlockedTier1Units[i].power,
+                    this.gameEngine.unlockedTier1Units[i].health,
+                    this.gameEngine.unlockedTier1Units[i].effectDesc
                 );
             });
 
-            const rankThreeUnitElement = this.getCreatedCardElement(
-                this.gameEngine.rankThreeUnits[i].imageSrc, 
-                this.gameEngine.rankThreeUnits[i].type1, 
-                this.gameEngine.rankThreeUnits[i].type2, 
-                this.gameEngine.rankThreeUnits[i].power,
-                this.gameEngine.rankThreeUnits[i].health
+            const tier2UnitElement = this.getCreatedCardElement(
+                this.gameEngine.unlockedTier2Units[i].imageSrc,
+                this.gameEngine.unlockedTier2Units[i].type1,
+                this.gameEngine.unlockedTier2Units[i].type2,
+                this.gameEngine.unlockedTier2Units[i].power,
+                this.gameEngine.unlockedTier2Units[i].health
             );
-            this.tierThreeUnitsDiv.appendChild(rankThreeUnitElement);
-            this.tierThreeUnitElements.push(rankThreeUnitElement);
+            this.tier2UnitsDiv.appendChild(tier2UnitElement);
+            this.tier2UnitElements.push(tier2UnitElement);
 
-            this.tierThreeUnitElements[i].addEventListener("mousedown", event => {
+            this.tier2UnitElements[i].addEventListener("mousedown", event => {
                 this.createCardDisplayElement(
-                    this.gameEngine.rankThreeUnits[i].imageSrc,
-                    this.gameEngine.rankThreeUnits[i].name,
-                    this.gameEngine.rankThreeUnits[i].tier, 
-                    this.gameEngine.rankThreeUnits[i].type1, 
-                    this.gameEngine.rankThreeUnits[i].type2, 
-                    this.gameEngine.rankThreeUnits[i].power,
-                    this.gameEngine.rankThreeUnits[i].health,
-                    this.gameEngine.rankThreeUnits[i].effectDesc
+                    this.gameEngine.unlockedTier2Units[i].imageSrc,
+                    this.gameEngine.unlockedTier2Units[i].name,
+                    this.gameEngine.unlockedTier2Units[i].tier,
+                    this.gameEngine.unlockedTier2Units[i].type1,
+                    this.gameEngine.unlockedTier2Units[i].type2,
+                    this.gameEngine.unlockedTier2Units[i].power,
+                    this.gameEngine.unlockedTier2Units[i].health,
+                    this.gameEngine.unlockedTier2Units[i].effectDesc
+                );
+            });
+
+            const tier3UnitElement = this.getCreatedCardElement(
+                this.gameEngine.unlockedTier3Units[i].imageSrc,
+                this.gameEngine.unlockedTier3Units[i].type1,
+                this.gameEngine.unlockedTier3Units[i].type2,
+                this.gameEngine.unlockedTier3Units[i].power,
+                this.gameEngine.unlockedTier3Units[i].health
+            );
+            this.tier3UnitsDiv.appendChild(tier3UnitElement);
+            this.tier3UnitElements.push(tier3UnitElement);
+
+            this.tier3UnitElements[i].addEventListener("mousedown", event => {
+                this.createCardDisplayElement(
+                    this.gameEngine.unlockedTier3Units[i].imageSrc,
+                    this.gameEngine.unlockedTier3Units[i].name,
+                    this.gameEngine.unlockedTier3Units[i].tier,
+                    this.gameEngine.unlockedTier3Units[i].type1,
+                    this.gameEngine.unlockedTier3Units[i].type2,
+                    this.gameEngine.unlockedTier3Units[i].power,
+                    this.gameEngine.unlockedTier3Units[i].health,
+                    this.gameEngine.unlockedTier3Units[i].effectDesc
                 );
             });
         }
@@ -147,46 +149,34 @@ class DeckMenu extends Menu {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");
 
+        const cardTypes = document.createElement("div");
+        cardTypes.classList.add("card-types");
+        cardElement.appendChild(cardTypes);
+
+        const cardType1 = document.createElement("div");
+        cardType1.innerHTML = (`${TYPES.TYPES_ICONS[type1]}`);
+        cardTypes.appendChild(cardType1);
+
+        const cardType2 = document.createElement("div");
+        cardType2.innerHTML = (`${TYPES.TYPES_ICONS[type2]}`);
+        cardTypes.appendChild(cardType2);
+
         const cardImage = document.createElement("img");
         cardImage.classList.add("card-image");
         cardImage.setAttribute(`src`, `${imageSrc}`);
-        cardElement.appendChild(cardImage); 
+        cardElement.appendChild(cardImage);
 
         const cardStats = document.createElement("div");
         cardStats.classList.add("card-stats");
         cardElement.appendChild(cardStats);
 
-        const cardType1 = document.createElement("div");
-        cardType1.classList.add("card-type-1");
-        cardType1.innerHTML = (`${TYPES.TYPES_ICONS[type1]}`);
-        cardStats.appendChild(cardType1);
-
-        const cardType2 = document.createElement("div");
-        cardType2.classList.add("card-type-2");
-        cardType2.innerHTML = (`${TYPES.TYPES_ICONS[type2]}`);
-        cardStats.appendChild(cardType2);
-
         const cardPower = document.createElement("div");
-        cardPower.classList.add("card-power");
         cardPower.innerHTML = (`${power}⚔️`);
         cardStats.appendChild(cardPower);
 
         const cardHealth = document.createElement("div");
-        cardHealth.classList.add("card-health");
         cardHealth.innerHTML = (`${health}❤️`);
         cardStats.appendChild(cardHealth);
-
-        /*
-        const cardAttack = document.createElement("div");
-        cardAttack.classList.add("card-attack");
-        cardAttack.innerHTML = (`1⚔️`);
-        cardStats.appendChild(cardAttack);
-
-        const cardHealth = document.createElement("div");
-        cardHealth.classList.add("card-health");
-        cardHealth.innerHTML = (`1❤️`);
-        cardStats.appendChild(cardHealth);
-        */
 
         return cardElement;
     }

@@ -2,9 +2,15 @@
     /* Initialize values in GameEngine.js*/
     --game-width: 0;
     --game-height: 0;
+    --button-width: 0;
+    --button-height: 0;
     --card-width: 0;
     --card-height: 0;
+    --summon-width: 0;
+    --summon-height: 0;
 
+
+    --color-black: black;
     --color-grey: #757575;
     --color-white: white;
     --color-red: #d95f4c;
@@ -24,7 +30,7 @@ body {
     font-size: 1rem;
 }
 
-.game-container{
+.game-container {
     position: relative;
     margin: 1.5% auto;
     width: var(--game-width);
@@ -57,8 +63,8 @@ body {
 .menu button {
     margin: 1% 0 0 0;
     display: block;
-    width: var(--card-height);
-    height: var(--card-width);
+    width: var(--button-width);
+    height: var(--button-height);
     cursor: pointer;
 }
 
@@ -67,12 +73,12 @@ body {
     color: white;
 }
 
-img{
+img {
     image-rendering: pixelated;
 }
 
 /* Card Display */
-.card-background{
+.card-background {
     position: absolute;
     top: 0;
     right: 0;
@@ -84,10 +90,10 @@ img{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    background-color: rgba(0, 0, 50, 0.3);
+    background-color: rgba(0, 0, 0, 0.75);
 }
 
-.card-background .card-display{
+.card-background .card-display {
     border: 6px solid var(--color-red);
     border-radius: var(--card-border-radius);
     width: 30%;
@@ -98,14 +104,14 @@ img{
     flex-direction: column;
 }
 
-.card-display .card-image{
+.card-display .card-image {
     width: 100%;
     height: 60%;
     object-fit: contain;
     image-rendering: pixelated;
 }
 
-.card-display .card-stats-container{
+.card-display .card-stats-container {
     background-color: var(--color-red);
     width: 100%;
     height: 15%;
@@ -115,14 +121,14 @@ img{
     gap: 0 10%;
 }
 
-.card-display .card-stats-container .card-center{
+.card-display .card-stats-container .card-center {
     grid-column: 1 / span 3;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.card-display .card-effects{
+.card-display .card-effects {
     border-bottom-left-radius: 100%;
     border-bottom-right-radius: 100%;
     width: 100%;
@@ -133,7 +139,7 @@ img{
     align-items: center;
 }
 
-.card-background .card-button{
+.card-background .card-button {
     width: 15%;
     height: 10%;
 }
@@ -196,93 +202,153 @@ img{
 
 .tier-one-items,
 .tier-two-items,
-.tier-three-items{
+.tier-three-items {
     display: grid;
     grid-template-columns: repeat(4, var(--card-width));
     grid-template-rows: repeat(1, var(--card-height));
     gap: 1.2% 1.2%;
 }
 
+/* Deck Menu - Card Element*/
 .card-element {
     margin: 0.5%;
-    border: 3px solid #d95f4c;
-    border-radius: var(--card-border-radius);
+    /* BORDER LINE-WIDTH VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    border: 0.4rem solid var(--color-red);
+    border-radius: 10%;
     width: var(--card-width);
     height: var(--card-height);
-    background-color: white;
-    color: black;
-    display: flex;
+    background-color: var(--color-white);
+    display: block;
     flex-direction: column;
 }
 
-.card-element:hover{
-    border: 3px solid white;
-    background-color:#d95f4c;
-    color: white;
+.card-element:hover,
+.card-element:hover [class="card-image"] {
+    border-color: var(--color-white);
+    background-color: var(--color-red);
 }
 
-.card-element  .card-image {
-    width: 100%;
-    height: 80%;
-    object-fit: contain;
-    image-rendering: pixelated
+.card-element:hover [class="card-types"],
+.card-element:hover [class="card-stats"] {
+    background-color: var(--color-white);
+    color: var(--color-black);
 }
 
-.card-element .card-stats{
+.card-element .card-types,
+.card-element .card-stats {
     width: 100%;
-    height: 20%;
+    /* HEIGHT VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    height: 15%;
+    background-color: var(--color-red);
+    color: var(--color-white);
     display: flex;
-    justify-content: space-around;
+}
+
+.card-element .card-types {
+    justify-content: flex-start;
+    clip-path: polygon(0 0, 100% 0, 40% 100%, 0% 100%);
+    transform: translate(-0.05rem, -0.05rem);
+    border-top-left-radius: 0.4rem;
+}
+
+.card-element .card-image {
+    width: 100%;
+    /* HEIGHT VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    height: 70%;
+    background-color: var(--color-white);
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.card-element .card-stats {
+    justify-content: flex-end;
+    clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
+    transform: translate(0.05rem, 0.05rem);
+    border-bottom-right-radius: 0.4rem;
 }
 
 /* Play Menu Upper Container */
 .play-battle-menu .upper-container {
-    padding: 1rem;
     height: 60%;
-    background-color: sandybrown;
+    object-fit: contain;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    grid-template-rows: 15% 85%;
 }
 
-.upper-container .upper-header {
+.upper-container .upper-image {
+    position: absolute;
+    z-index: -2;
     width: 100%;
-    height: 10%;
+    height: 60%;
+    object-fit: fill;
+}
+
+.upper-container .upper-header-container {
+    background-color: sandybrown;
+    grid-column: 1 / span 3;
     display: flex;
     justify-content: space-evenly;
 }
 
-.upper-container .creatures-container {
-    width: 100%;
-    height: 90%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 1fr;
+.upper-left-container {
+    margin: 4%;
+    border-radius: 4%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
-.allies-container,
-.enemies-container {
+.upper-left-container .active-type-combo {}
+
+.upper-left-container .inactive-type-combo {
+    filter: grayscale(100%);
+}
+
+.upper-center-container {
+    padding: 2.5% 0;
     display: grid;
-    grid-template-columns: repeat(5, var(--card-width));
-    grid-template-rows: 1fr;
-    justify-content: center;
-    gap: 4%;
+    grid-template-columns: 1fr;
+    grid-template-rows: 90% 10%;
 }
 
-.creature-slot {
-    width: 99px;
-    height: 138px;
-    background-color: whitesmoke;
+.upper-center-container .units-container {
+    display: grid;
+    grid-template-columns: repeat(6, var(--summon-width));
+    grid-template-rows: 1fr;
+    justify-content: space-evenly;
+    align-items: flex-end;
+
 }
+
+.upper-center-container .stats-container {
+    grid-template-columns: repeat(6, var(--summon-width));
+    grid-template-rows: 1fr;
+    background-color: blue;
+}
+
+.unit-slot {
+    display: inline-block;
+    width: var(--summon-width);
+    height: var(--summon-height);
+    border: 2px solid var(--color-black);
+}
+
+.upper-right-container {}
 
 /* Play Menu Lower Container */
 .play-battle-menu .lower-container {
-    padding: 1rem;
+    padding: 1%;
     width: 100%;
     height: 40%;
-    background-color: steelblue;
+    background: rgb(217, 95, 76);
+    background: linear-gradient(342deg, rgba(217, 95, 76, 1) 0%, rgba(217, 95, 76, 1) 50%, rgba(255, 255, 255, 1) 50%);
     display: flex;
 }
 
-.lower-left-container {
+.lower-left-container,
+.lower-right-container {
     width: 15%;
     height: 100%;
     display: flex;
@@ -294,27 +360,10 @@ img{
 .lower-center-container {
     width: 70%;
     height: 100%;
-    background-color: darkblue;
-
+    background-color: #5f637a;
     display: grid;
     grid-template-columns: repeat(5, var(--card-width));
     grid-template-rows: 1fr;
-    justify-content: center;
-    align-items: center;
-    gap: 6%;
-}
-
-.holding-card-slot {
-    width: var(--card-width);
-    height: var(--card-height);
-    background-color: steelblue;
-}
-
-.lower-right-container {
-    width: 15%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 }

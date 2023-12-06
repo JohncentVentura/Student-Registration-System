@@ -103,16 +103,28 @@ class GameEngine {
         //Sets canvas width and height attributes in HTML, sets --game-width and --game-height variables in CSS 
         document.documentElement.style.setProperty("--game-width", `${this.gameWidth}px`);
         document.documentElement.style.setProperty("--game-height", `${this.gameHeight}px`);
+        this.containerRect = this.container.getBoundingClientRect(); //For getting elements position, refreshes value when resizing
         this.canvas.setAttribute("width", `${this.gameWidth}`);
         this.canvas.setAttribute("height", `${this.gameHeight}`);
+        
+        this.buttonWidth = this.canvas.width * 0.1;
+        this.buttonHeight = this.canvas.height * 0.1;
+        document.documentElement.style.setProperty('--button-width', `${this.buttonWidth}px`);
+        document.documentElement.style.setProperty('--button-height', `${this.buttonHeight}px`);
 
         //Set width and height for CardObjects.js, sets --card-width and --card-height variables in CSS 
-        this.cardWidth = this.canvas.width * 0.07;
-        this.cardHeight = this.canvas.width * 0.001 * 100;
+        this.cardWidth = this.canvas.width * 0.08;
+        this.cardHeight = this.canvas.width * 0.12;
         document.documentElement.style.setProperty('--card-width', `${this.cardWidth}px`);
         document.documentElement.style.setProperty('--card-height', `${this.cardHeight}px`);
 
-        this.containerRect = this.container.getBoundingClientRect(); //For getting elements position, refreshes value when resizing
+        this.summonWidth = this.cardWidth + (this.cardWidth * 0.4);
+        this.summonHeight = this.cardHeight + (this.cardHeight * 0.2);
+        document.documentElement.style.setProperty('--summon-width', `${this.summonWidth}px`);
+        document.documentElement.style.setProperty('--summon-height', `${this.summonHeight}px`);
+
+        console.log("game size & containerRect " +this.gameWidth, this.gameHeight, this.containerRect); 
+        console.log("card size "+this.cardWidth, this.cardHeight)
     }
 
     changeMenu(previousMenu, nextMenu) {

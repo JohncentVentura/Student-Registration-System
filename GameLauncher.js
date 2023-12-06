@@ -9,7 +9,7 @@ function getVH(percent) {
 }
 
 (function gameLaunch() {
-    const gameWidth = getVW(90);
+    const gameWidth = getVW(95);
     const gameHeight = gameWidth / 2;
     const gameEngine = new GameEngine(gameWidth, gameHeight);
     gameEngine.launch();

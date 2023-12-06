@@ -107,6 +107,13 @@ class Menu {
         console.log("Mouse is outside of canvas")
     }
 
+    getElementRect(element){
+        const rect = element.getBoundingClientRect();
+        rect.x -= this.gameEngine.containerRect.x;
+        rect.y -= this.gameEngine.containerRect.y;
+        return rect;
+    }
+
     isMouseInCard(card) {
         if (this.mouseX > card.x && this.mouseX < (card.x + card.width) && this.mouseY > card.y && this.mouseY < (card.y + card.height)) {
             return true;
