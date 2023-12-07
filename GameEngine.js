@@ -5,7 +5,7 @@ class GameEngine {
 
         this.container = document.querySelector(".game-container");
         this.canvas = this.container.querySelector(".game-canvas");
-        this.context = this.canvas.getContext("2d");
+        this.ctx = this.canvas.getContext("2d");
         this.setGameScreenSize();
 
         this.buttonDefaultImage = new Image();
@@ -16,8 +16,8 @@ class GameEngine {
 
     update() {
         const gameLoop = () => {
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.context.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
             //Only add/edit/remove codes below
 
             if (this.currentMenu) { this.currentMenu.update(); }
@@ -119,12 +119,12 @@ class GameEngine {
         document.documentElement.style.setProperty('--card-height', `${this.cardHeight}px`);
 
         this.summonWidth = this.cardWidth + (this.cardWidth * 0.4);
-        this.summonHeight = this.cardHeight + (this.cardHeight * 0.2);
+        this.summonHeight = this.cardHeight + (this.cardHeight * 0.1);
         document.documentElement.style.setProperty('--summon-width', `${this.summonWidth}px`);
         document.documentElement.style.setProperty('--summon-height', `${this.summonHeight}px`);
 
-        console.log("game size & containerRect " +this.gameWidth, this.gameHeight, this.containerRect); 
-        console.log("card size "+this.cardWidth, this.cardHeight)
+        //console.log("game size & containerRect " +this.gameWidth, this.gameHeight, this.containerRect); 
+        //console.log("card size "+this.cardWidth, this.cardHeight)
     }
 
     changeMenu(previousMenu, nextMenu) {

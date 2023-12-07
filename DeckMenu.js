@@ -58,7 +58,7 @@ class DeckMenu extends Menu {
 
         //Creating Units Element & Adding Event Listener to each Units Element
         for (let i = 0; i < 12; i++) {
-            const tier1UnitElement = this.getCreatedCardElement(
+            const tier1UnitElement = this.getSellingCardElement(
                 this.gameEngine.unlockedTier1Units[i].imageSrc,
                 this.gameEngine.unlockedTier1Units[i].type1,
                 this.gameEngine.unlockedTier1Units[i].type2,
@@ -81,7 +81,7 @@ class DeckMenu extends Menu {
                 );
             });
 
-            const tier2UnitElement = this.getCreatedCardElement(
+            const tier2UnitElement = this.getSellingCardElement(
                 this.gameEngine.unlockedTier2Units[i].imageSrc,
                 this.gameEngine.unlockedTier2Units[i].type1,
                 this.gameEngine.unlockedTier2Units[i].type2,
@@ -104,7 +104,7 @@ class DeckMenu extends Menu {
                 );
             });
 
-            const tier3UnitElement = this.getCreatedCardElement(
+            const tier3UnitElement = this.getSellingCardElement(
                 this.gameEngine.unlockedTier3Units[i].imageSrc,
                 this.gameEngine.unlockedTier3Units[i].type1,
                 this.gameEngine.unlockedTier3Units[i].type2,
@@ -145,7 +145,7 @@ class DeckMenu extends Menu {
         */
     }
 
-    getCreatedCardElement(imageSrc, type1, type2, power, health) {
+    getSellingCardElement(imageSrc, type1, type2, power, health) {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");
 

@@ -102,6 +102,42 @@ class Menu {
         })
     }
 
+    getSellingCardElement(type1, type2, power, health) {
+        const cardElement = document.createElement("div");
+        cardElement.classList.add("card-element");
+
+        const cardTypes = document.createElement("div");
+        cardTypes.classList.add("card-types");
+        cardElement.appendChild(cardTypes);
+
+        const cardType1 = document.createElement("div");
+        cardType1.innerHTML = (`${TYPES.TYPES_ICONS[type1]}`);
+        cardTypes.appendChild(cardType1);
+
+        const cardType2 = document.createElement("div");
+        cardType2.innerHTML = (`${TYPES.TYPES_ICONS[type2]}`);
+        cardTypes.appendChild(cardType2);
+
+        const cardImage = document.createElement("div");
+        cardImage.classList.add("card-image");
+        //cardImage.setAttribute(`src`, `${imageSrc}`);
+        cardElement.appendChild(cardImage);
+
+        const cardStats = document.createElement("div");
+        cardStats.classList.add("card-stats");
+        cardElement.appendChild(cardStats);
+
+        const cardPower = document.createElement("div");
+        cardPower.innerHTML = (`${power}⚔️`);
+        cardStats.appendChild(cardPower);
+
+        const cardHealth = document.createElement("div");
+        cardHealth.innerHTML = (`${health}❤️`);
+        cardStats.appendChild(cardHealth);
+
+        return cardElement;
+    }
+
     /* For menus where cards has interactions */
     onMouseOut = event => {
         console.log("Mouse is outside of canvas")
