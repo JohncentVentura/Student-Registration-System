@@ -8,42 +8,40 @@ class PlayMenu extends Menu {
         this.sellingUnitCount = 4;
         this.sellingItemCount = 2;
 
-        this.sellingUnitElements = [];
+        this.sellingUnitElements = []; //For Selling Card Stats
         this.sellingUnitRects = []; //For position of Card
         this.sellingUnitCards = [];
 
         this.summonedUnitElements = []; //For border in CSS
         this.summonedUnitRects = []; //For position of Card
-        this.summonedUnitTypesElements = [];
-        this.summonedUnitStatsElements = [];
         this.summonedUnitCards = []; //For Back-End
+
+        this.summonedUnitStatsElements = [];
+        this.summonedUnitStatsUpperElements = [];
+        this.summonedUnitStatsLowerElements = [];
+
+        this.swappingCards = [];
 
         //Mouse
         this.mouseX = 0;
         this.mouseY = 0;
-        this.holdingCardID = -1;
         this.isHoldingCard = false;
-
+        this.holdingCard = null;
     }
 
     onMouseMove = event => {
         this.onMouseMoveOnCard(event);
 
         for (let i = 0; i < this.summonedUnitRects.length; i++) {
-            if (this.sellingUnitCards[this.holdingCardID]
-                && this.isCardInRect(this.sellingUnitCards[this.holdingCardID], this.summonedUnitRects[i])
-                && this.isHoldingCard) {
-                this.summonedUnitElements[i].style.setProperty("border", `2px solid var(--color-black)`);
-            } else {
-                this.summonedUnitElements[i].style.setProperty("border", `0px solid var(--color-black)`);
+            if (this.holdingCard //summonedUnitRects has a summonedUnitCards
+                && this.isCardInRect(this.holdingCard, this.summonedUnitRects[i]) && this.isHoldingCard
+                && this.summonedUnitCards[i] != null && this.summonedUnitCards[i].name != null 
+                && this.holdingCard.name != this.summonedUnitCards[i].name) {
+                this.summonedUnitElements[i].style.setProperty("border", `2px solid var(--color-red)`);
             }
-        }
-    }
-
-    setSummoningUnitElementBorder(index) {
-        for (let i = 0; i < this.summonedUnitRects.length; i++) {
-            if (i == index) {
-                this.summonedUnitElements[index].style.setProperty("border", `2px solid var(--color-black)`);
+            else if (this.holdingCard //summonedUnitRects is empty
+                && this.isCardInRect(this.holdingCard, this.summonedUnitRects[i]) && this.isHoldingCard) {
+                this.summonedUnitElements[i].style.setProperty("border", `2px solid var(--color-black)`);
             }
             else {
                 this.summonedUnitElements[i].style.setProperty("border", `0px solid var(--color-black)`);
@@ -62,11 +60,12 @@ class PlayMenu extends Menu {
             let newCardX = newMouseX - this.mouseX;
             let newCardY = newMouseY - this.mouseY;
 
-            let holdingCard = this.sellingUnitCards[this.holdingCardID];
+            let holdingCard = this.holdingCard;
             holdingCard.x += newCardX;
             holdingCard.y += newCardY;
 
-            this.drawSellingCardObjects();
+            //this.drawSummonedCards();
+            //this.drawSellingCards();
             this.mouseX = newMouseX; //Slows the dragging
             this.mouseY = newMouseY;
         }
@@ -74,10 +73,19 @@ class PlayMenu extends Menu {
 
     onMouseDown = event => {
         this.onMouseDownOnCard(event);
+        //console.log("onMouseDown() this.holdingCard", this.holdingCard);
 
         if (this.isMouseInRect(this.drawCardRect)) {
             console.log("Draw cards")
             this.rollSellingCards();
+            
+            for(let i = 0; i < this.summonedUnitCards.length; i++){
+                if(this.summonedUnitCards[i].summonId != undefined){
+                    this.setSummonedUnitStatsElement(i);
+                }
+            }
+
+            console.log("summonUnitCard() summoned&selling cards", this.summonedUnitCards, this.sellingUnitCards);
         }
         else if (this.isMouseInRect(this.showDeckRect)) {
             this.gameEngine.changeMenu(this, this.gameEngine.deckMenu);
@@ -90,97 +98,117 @@ class PlayMenu extends Menu {
     onMouseDownOnCard(event) {
         this.mouseX = parseInt(event.offsetX);
         this.mouseY = parseInt(event.offsetY);
-        let cardId = 0;
 
-        this.sellingUnitCards.map(card => {
+        let allCards = [];
+        allCards.push(...this.sellingUnitCards);
+        allCards.push(...this.summonedUnitCards);
+
+        allCards.map(card => {
             if (this.isMouseInCard(card)) {
-                this.holdingCardID = cardId;
+                this.holdingCard = card;
                 this.isHoldingCard = true;
                 return;
             }
-            cardId++; //Increments until the if statement returns to end map()
-        });
+        })
     }
 
     onMouseUp = event => {
-        if (this.isHoldingCard && this.sellingUnitCards[this.holdingCardID].x === this.sellingUnitCards[this.holdingCardID].baseX
-            && this.sellingUnitCards[this.holdingCardID].y === this.sellingUnitCards[this.holdingCardID].baseY) {
+        if (this.isHoldingCard && this.holdingCard.x === this.holdingCard.baseX && this.holdingCard.y === this.holdingCard.baseY) {
             this.createCardDisplayElement(
-                this.sellingUnitCards[this.holdingCardID].image.src,
-                this.sellingUnitCards[this.holdingCardID].name,
-                this.sellingUnitCards[this.holdingCardID].tier,
-                this.sellingUnitCards[this.holdingCardID].type1,
-                this.sellingUnitCards[this.holdingCardID].type2,
-                this.sellingUnitCards[this.holdingCardID].power,
-                this.sellingUnitCards[this.holdingCardID].health,
-                this.sellingUnitCards[this.holdingCardID].effectDesc
+                this.holdingCard.image.src,
+                this.holdingCard.name,
+                this.holdingCard.tier,
+                this.holdingCard.type1,
+                this.holdingCard.type2,
+                this.holdingCard.power,
+                this.holdingCard.health,
+                this.holdingCard.effectDesc
             );
         }
 
-        this.onMouseUpOnCard(event);
+        if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[0]) && this.isHoldingCard) {
+            this.summonUnitCard(0, this.holdingCard);
+        }
+        else if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[1]) && this.isHoldingCard) {
+            this.summonUnitCard(1, this.holdingCard);
+        }
+        else if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[2]) && this.isHoldingCard) {
+            this.summonUnitCard(2, this.holdingCard);
+        }
+        else if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[3]) && this.isHoldingCard) {
+            this.summonUnitCard(3, this.holdingCard);
+        }
+        else if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[4]) && this.isHoldingCard) {
+            this.summonUnitCard(4, this.holdingCard);
+        }
+        else if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[5]) && this.isHoldingCard) {
+            this.summonUnitCard(5, this.holdingCard);
+        }
+        else if (this.isHoldingCard) { 
+            console.log("Return to previous position");
+            this.holdingCard.x = this.holdingCard.baseX;
+            this.holdingCard.y = this.holdingCard.baseY;
+        }
 
-        this.sellingUnitCards.map(card => {
-            if (this.isCardInRect(card, this.summonedUnitRects[0]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[0]);
-                this.setSummonedUnit(0, card);
-                this.setSellingElements(0);
-            }
-            else if (this.isCardInRect(card, this.summonedUnitRects[1]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[1]);
-                this.setSummonedUnit(1, card);
-                this.setSellingElements(1);
-            }
-            else if (this.isCardInRect(card, this.summonedUnitRects[2]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[2]);
-                this.setSummonedUnit(2, card);
-                this.setSellingElements(2);
-            }
-            else if (this.isCardInRect(card, this.summonedUnitRects[3]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[3]);
-                this.setSummonedUnit(3, card);
-                this.setSellingElements(3);
-            }
-            else if (this.isCardInRect(card, this.summonedUnitRects[4]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[4]);
-                this.setSummonedUnit(4, card);
-                this.setSellingElements(4);
-            }
-            else if (this.isCardInRect(card, this.summonedUnitRects[5]) && !this.isHoldingCard) {
-                this.setUnitPosition(card, this.summonedUnitRects[5]);
-                this.setSummonedUnit(5, card);
-                this.setSellingElements(5);
-            }
-            else if (!this.isHoldingCard) { //Return to previous position
-                card.x = card.baseX;
-                card.y = card.baseY;
-            }
-        });
+        this.onMouseUpOnCard(event);
     }
 
-    setUnitPosition(card, rect) {
-        if (card.tier == 1) {
-            card.x = rect.x + (rect.width * 0.15);
-            card.y = rect.y + (rect.height * 0.42);
+    summonUnitCard(index, card) {
+        if (this.summonedUnitCards[index].name == null && card.summonId != undefined) { //Move summoned card to an empty summon field
+            console.log("Move summoned card to an empty rect");
+            this.setSummonedUnitPosition(this.summonedUnitRects[index], card);
+            this.setSummonedUnitCard(index, card);
+            this.setSummonedUnitStatsElement(index);
+
+            this.summonedUnitStatsElements[card.summonId].style.setProperty("visibility", "hidden");
+            this.removeSummonedUnitCard(card.summonId);
         }
-        else if (card.tier == 2) {
-            card.x = rect.x + (rect.width * 0.14);
-            card.y = rect.y + (rect.height * 0.39);
+        else if (this.summonedUnitCards[index].name == card.name 
+            && this.summonedUnitCards[index].summonId != card.summonId) {
+            console.log("LEVEL UP!!!")
+            this.holdingCard.x = this.holdingCard.baseX;
+            this.holdingCard.y = this.holdingCard.baseY;
         }
-        else if (card.tier == 3) {
-            card.x = rect.x + (rect.width * 0.16);
-            card.y = rect.y + (rect.height * 0.33);
+        else if (this.summonedUnitCards[index].name != null && card.summonId != undefined) {
+            console.log("Move summoned card with summonId", card.summonId, "& replace summoned card with index", index);
+
+            //CONSTANT ANTI-REFERENCE VARIABLES XD
+            this.swappingCards = [...this.summonedUnitCards];
+            const swappingId = this.swappingCards[card.summonId].summonId;
+
+            this.summonedUnitCards[index] = this.swappingCards[swappingId];
+            this.summonedUnitCards[swappingId] = this.swappingCards[index];
+            
+            this.setSummonedUnitPosition(this.summonedUnitRects[index], this.summonedUnitCards[index]);
+            this.setSummonedUnitPosition(this.summonedUnitRects[swappingId], this.summonedUnitCards[swappingId]);
+            this.summonedUnitCards[index].summonId = index;
+            this.summonedUnitCards[swappingId].summonId = swappingId;
+            this.setSummonedUnitStatsElement(index);
+            this.setSummonedUnitStatsElement(swappingId);
         }
-        card.baseX = card.x;
-        card.baseY = card.y;
+        else if (this.summonedUnitCards[index].name != null) {
+            console.log("CANNOT Summon bought card to an occupied rect")
+            card.x = card.baseX;
+            card.y = card.baseY;
+        }
+        else if (this.summonedUnitCards[index].name == null) {
+            console.log("Summon bought card to an empty rect");
+            this.setSummonedUnitPosition(this.summonedUnitRects[index], card);
+            this.setSummonedUnitCard(index, card);
+            this.setSummonedUnitStatsElement(index);
+            this.setBoughtUnitElements();
+        }
+
+        
     }
 
     onMouseUpOnCard(event) {
         if (!this.isHoldingCard) {
             return;
-        } else {
+        } else if (this.isHoldingCard) {
             event.preventDefault();
             this.isHoldingCard = false;
-            this.holdingCardID = -1;
+            this.holdingCard = null;
         }
     }
 
@@ -211,14 +239,14 @@ class PlayMenu extends Menu {
             this.gameEngine.ctx.drawImage(this.gameEngine.buttonDefaultImage, this.gameBattleRect.x, this.gameBattleRect.y, this.gameBattleRect.width, this.gameBattleRect.height);
         }
 
-        this.drawSellingCardObjects();
-        this.drawHoldingCardObject();
+        this.drawSellingCards();
+        this.drawSummonedCards();
+        this.drawHoldingCard();
     }
 
     launch() {
         this.createMenuElement("play-battle-menu",
-            `
-            <div class="upper-container"> 
+            `<div class="upper-container"> 
                 <img src="/Assets/BG Field.png" alt="BG Field.png" class="upper-image">
                 <div class="upper-header-container">
                     <div>Life Points  5</div>
@@ -239,8 +267,8 @@ class PlayMenu extends Menu {
                 </div>
 
                 <div class="upper-center-container">
-                    <div class="units-container"></div>
-                    <div class="stats-container"></div>
+                    <div class="summoned-unit-container"></div>
+                    <div class="summoned-stats-container"></div>
                 </div>
 
                 <div class="upper-right-container">
@@ -259,9 +287,7 @@ class PlayMenu extends Menu {
                 <div class="lower-right-container">
                     <button type="button" class="game-battle-button">Battle</button>
                 </div>
-            </div>
-            `
-        );
+            </div>`);
         this.element.style.setProperty('z-index', '-1'); //Canvas will be rendered before innerHTML so canvas is interactable
 
         //Upper Container
@@ -270,8 +296,8 @@ class PlayMenu extends Menu {
         this.upperLeftContainer = document.querySelector(".upper-left-container");
         this.upperCenterContainer = document.querySelector(".upper-center-container");
         this.upperRightContainer = document.querySelector(".upper-right-container");
-        this.unitsContainer = document.querySelector(".units-container");
-        this.statsContainer = document.querySelector(".stats-container");
+        this.summonedUnitContainer = document.querySelector(".summoned-unit-container");
+        this.summonedStatsContainer = document.querySelector(".summoned-stats-container");
 
         //Lower Container
         this.lowerContainer = document.querySelector(".lower-container");
@@ -279,9 +305,13 @@ class PlayMenu extends Menu {
         this.lowerCenterContainer = document.querySelector(".lower-center-container");
         this.lowerRightContainer = document.querySelector(".lower-right-container");
 
+        //Canvas Buttons
         this.drawCardButton = document.querySelector(".draw-card-button");
         this.showDeckButton = document.querySelector(".show-deck-button");
         this.gameBattleButton = document.querySelector(".game-battle-button");
+        this.drawCardRect = this.getElementRect(this.drawCardButton);
+        this.gameBattleRect = this.getElementRect(this.gameBattleButton);
+        this.showDeckRect = this.getElementRect(this.showDeckButton);
 
         /*
         for (let i = 0; i < 5; i++) {
@@ -296,11 +326,6 @@ class PlayMenu extends Menu {
         }
         */
 
-        //Buttons in Canvas
-        this.drawCardRect = this.getElementRect(this.drawCardButton);
-        this.gameBattleRect = this.getElementRect(this.gameBattleButton);
-        this.showDeckRect = this.getElementRect(this.showDeckButton);
-
         //Deck & Cards Setup
         //* TEMPORARY!!! playingUnits will be initialized later on
         this.gameEngine.playingTier1Units = this.gameEngine.unlockedTier1Units;
@@ -314,59 +339,73 @@ class PlayMenu extends Menu {
         this.gameEngine.playingUnits.push(...this.gameEngine.playingTier3Units);
 
         this.rollSellingCards();
-    }
 
-    drawSellingCardObjects() {
-        const patternImage = new Image();
-        patternImage.src = "/Assets/Card Background.png";
-        const pattern = this.gameEngine.ctx.createPattern(patternImage, "repeat");
-
-        for (let card of this.sellingUnitCards) {
-            if (card == this.sellingUnitCards[this.holdingCardID]) {
-                continue; //Don't draw selected card, drawHoldingCardObject() will draw it 
-            }
-
-            //this.gameEngine.context.fillStyle = pattern;
-            //this.gameEngine.context.fillRect(card.x, card.y, card.width, card.height);
-            this.gameEngine.ctx.drawImage(
-                card.image,
-                0,
-                0,
-                80,
-                80,
-                card.x,
-                card.y,
-                card.width,
-                card.height
-            )
+        for (let i = 0; i < 6; i++) {
+            //For Summoned Unit Cards
+            const tempSummonedUnitCard = new Card({
+                image: new Image(),
+                imageSrc: "",
+                name: null,
+                tier: null,
+                type1: null,
+                type2: null,
+                power: null,
+                health: null,
+                effectDesc: null,
+                effectFunc: null,
+            });
+            this.summonedUnitCards.push(tempSummonedUnitCard);
         }
     }
 
-    drawHoldingCardObject() {
-        if (this.sellingUnitCards[this.holdingCardID]) {
-            /* TO FULL WIDTH AND HEIGHT ONLY!!!
-            const patternImage = new Image();
-            patternImage.src = "/Assets/Card Background.png";
-            const pattern = this.gameEngine.context.createPattern(patternImage, "repeat");
-            this.gameEngine.context.fillStyle = pattern;
-            this.gameEngine.context.fillRect(
-                this.holdingCardObjects[this.holdingCardID].x,
-                this.holdingCardObjects[this.holdingCardID].y,
-                this.holdingCardObjects[this.holdingCardID].width,
-                this.holdingCardObjects[this.holdingCardID].height
-            );
-            //*/
+    drawSellingCards() {
+        this.sellingUnitCards.map(card => {
+            if (card != this.holdingCard && card.name != undefined) {
+                this.gameEngine.ctx.drawImage(
+                    card.image,
+                    0,
+                    0,
+                    80,
+                    80,
+                    card.x,
+                    card.y,
+                    card.width,
+                    card.height
+                );
+            }
+        });
+    }
 
+    drawSummonedCards() {
+        this.summonedUnitCards.map(card => {
+            if (card != this.holdingCard && card.name != undefined) {
+                this.gameEngine.ctx.drawImage(
+                    card.image,
+                    0,
+                    0,
+                    80,
+                    80,
+                    card.x,
+                    card.y,
+                    card.width,
+                    card.height
+                );
+            }
+        });
+    }
+
+    drawHoldingCard() {
+        if (this.holdingCard) {
             this.gameEngine.ctx.drawImage(
-                this.sellingUnitCards[this.holdingCardID].image,
+                this.holdingCard.image,
                 0,
                 0,
                 80,
                 80,
-                this.sellingUnitCards[this.holdingCardID].x,
-                this.sellingUnitCards[this.holdingCardID].y,
-                this.sellingUnitCards[this.holdingCardID].width,
-                this.sellingUnitCards[this.holdingCardID].height
+                this.holdingCard.x,
+                this.holdingCard.y,
+                this.holdingCard.width,
+                this.holdingCard.height
             );
         }
     }
@@ -376,8 +415,9 @@ class PlayMenu extends Menu {
         this.sellingUnitElements = [];
         this.sellingUnitRects = [];
         this.sellingUnitCards = [];
-        this.summonedUnitTypesElements = [];
         this.summonedUnitStatsElements = [];
+        this.summonedUnitStatsUpperElements = [];
+        this.summonedUnitStatsLowerElements = [];
 
         //Removes all children elements of this.lowerCenterContainer
         while (this.lowerCenterContainer.hasChildNodes()) {
@@ -385,20 +425,30 @@ class PlayMenu extends Menu {
         }
 
         //Removes elements generated by setSummonElement():
-        while (this.unitsContainer.hasChildNodes()) {
-            this.unitsContainer.removeChild(this.unitsContainer.firstChild)
+        while (this.summonedUnitContainer.hasChildNodes()) {
+            this.summonedUnitContainer.removeChild(this.summonedUnitContainer.firstChild)
         }
 
-        while (this.statsContainer.hasChildNodes()) {
-            this.statsContainer.removeChild(this.statsContainer.firstChild)
+        while (this.summonedStatsContainer.hasChildNodes()) {
+            this.summonedStatsContainer.removeChild(this.summonedStatsContainer.firstChild)
         }
 
-        //Removes all children elements of this.lowerCenterContainer
-        while (this.lowerCenterContainer.hasChildNodes()) {
-            this.lowerCenterContainer.removeChild(this.lowerCenterContainer.firstChild)
-        }
+        this.createSummonedUnitStatsElements();
 
-        this.setSummonElements();
+        for (let i = 0; i < 6; i++) {
+            //For Summoned Unit Elements
+            const summonedUnitElement = document.createElement("div");
+            summonedUnitElement.classList.add("summoned-unit-div");
+
+            const summonedUnitField = document.createElement("img");
+            summonedUnitField.setAttribute("src", this.summonFieldImage.src);
+            summonedUnitElement.appendChild(summonedUnitField);
+
+            this.summonedUnitContainer.appendChild(summonedUnitElement);
+            this.summonedUnitElements.push(summonedUnitElement);
+            const summonedUnitRect = this.getElementRect(summonedUnitElement);
+            this.summonedUnitRects.push(summonedUnitRect);
+        }
 
         for (let i = 0; i < this.sellingUnitCount; i++) {
             rolledUnitCards.push(this.gameEngine.playingUnits[Math.floor(Math.random() * this.gameEngine.playingUnits.length)]);
@@ -415,12 +465,13 @@ class PlayMenu extends Menu {
             this.sellingUnitRects.push(sellingUnitRect);
 
             const sellingUnitCard = new Card({
-                imageSrc: rolledUnitCards[i].imageSrc,
+                image: new Image(),
                 x: this.sellingUnitRects[i].x,
                 y: this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05),
                 width: this.gameEngine.cardWidth,
                 height: this.gameEngine.cardHeight * 0.7,
 
+                imageSrc: rolledUnitCards[i].imageSrc,
                 name: rolledUnitCards[i].name,
                 tier: rolledUnitCards[i].tier,
                 type1: rolledUnitCards[i].type1,
@@ -434,62 +485,62 @@ class PlayMenu extends Menu {
         }
     }
 
-    setSummonElements() {
+    createSummonedUnitStatsElements() {
         for (let i = 0; i < 6; i++) {
-            //For Summoned Unit Elements
-            const summonedUnitElement = document.createElement("div");
-            summonedUnitElement.classList.add("summoned-unit-container");
-
-            const summonedUnitField = document.createElement("img");
-            summonedUnitField.setAttribute("src", this.summonFieldImage.src);
-            summonedUnitElement.appendChild(summonedUnitField);
-
-            this.unitsContainer.appendChild(summonedUnitElement);
-            this.summonedUnitElements.push(summonedUnitElement);
-            const summonedUnitRect = this.getElementRect(summonedUnitElement);
-            this.summonedUnitRects.push(summonedUnitRect);
-
-            //For Summoned Unit Cards
-            const tempCard = new Card({
-                imageSrc: "",
-                name: "",
-                tier: null,
-                type1: "",
-                type2: "",
-                power: null,
-                health: null,
-                effectDesc: "",
-                effectFunc: null,
-            });
-            this.summonedUnitCards.push(tempCard);
-
             //For Summoned Unit Stats Elements
             const unitStatsElement = document.createElement("div");
-            unitStatsElement.classList.add("summoned-stats-container");
+            unitStatsElement.classList.add("summoned-stats-div");
 
-            const unitTypes = document.createElement("div");
-            unitTypes.classList.add("summoned-unit-types");
-            unitTypes.innerHTML = (``);
-            unitStatsElement.appendChild(unitTypes);
+            const unitUpperStats = document.createElement("div");
+            unitUpperStats.classList.add("unit-upper-stats");
+            const unitUpper1Stats = document.createElement("div");
+            unitUpperStats.appendChild(unitUpper1Stats);
+            const unitUpper2Stats = document.createElement("div");
+            unitUpperStats.appendChild(unitUpper2Stats);
+            unitStatsElement.appendChild(unitUpperStats);
 
-            const unitStats = document.createElement("div");
-            unitStats.classList.add("summoned-unit-stats");
-            unitStats.innerHTML = (``);
-            unitStatsElement.appendChild(unitStats);
+            const unitLowerStats = document.createElement("div");
+            unitLowerStats.classList.add("unit-lower-stats");
+            const unitLower1Stats = document.createElement("div");
+            unitLowerStats.appendChild(unitLower1Stats);
+            const unitLower2Stats = document.createElement("div");
+            unitLowerStats.appendChild(unitLower2Stats);
+            unitStatsElement.appendChild(unitLowerStats);
 
-            this.statsContainer.appendChild(unitStatsElement);
-
-            this.summonedUnitTypesElements.push(unitTypes);
-            this.summonedUnitStatsElements.push(unitStats);
+            unitStatsElement.style.setProperty("visibility", "hidden");
+            this.summonedStatsContainer.appendChild(unitStatsElement);
+            this.summonedUnitStatsElements.push(unitStatsElement);
+            this.summonedUnitStatsUpperElements.push(unitUpperStats);
+            this.summonedUnitStatsLowerElements.push(unitLowerStats);
         }
     }
 
-    setSummonedUnit(index, card) {
+    setSummonedUnitPosition(rect, card) {
+        if (card.tier == 1) {
+            card.x = rect.x + (rect.width * 0.15);
+            card.y = rect.y + (rect.height * 0.42);
+        }
+        else if (card.tier == 2) {
+            card.x = rect.x + (rect.width * 0.14);
+            card.y = rect.y + (rect.height * 0.39);
+        }
+        else if (card.tier == 3) {
+            card.x = rect.x + (rect.width * 0.16);
+            card.y = rect.y + (rect.height * 0.33);
+        }
+        card.baseX = card.x;
+        card.baseY = card.y;
+    }
+
+    setSummonedUnitCard(index, card) {
         this.summonedUnitCards[index].image = card.image;
         this.summonedUnitCards[index].x = card.x;
         this.summonedUnitCards[index].y = card.y;
         this.summonedUnitCards[index].width = card.width;
         this.summonedUnitCards[index].height = card.height;
+
+        this.summonedUnitCards[index].baseX = this.summonedUnitCards[index].x;
+        this.summonedUnitCards[index].baseY = this.summonedUnitCards[index].y;
 
         this.summonedUnitCards[index].name = card.name;
         this.summonedUnitCards[index].tier = card.tier;
@@ -500,16 +551,24 @@ class PlayMenu extends Menu {
         this.summonedUnitCards[index].effectDesc = card.effectDesc;
         this.summonedUnitCards[index].effectFunc = card.effectFunc;
 
-        this.summonedUnitCards[index].baseX = this.summonedUnitCards[index].x;
-        this.summonedUnitCards[index].baseY = this.summonedUnitCards[index].y;
-
-        this.summonedUnitTypesElements[index].innerHTML = (
-            `${TYPES.TYPES_ICONS[this.summonedUnitCards[index].type1]} ${TYPES.TYPES_ICONS[this.summonedUnitCards[index].type2]}`
-        );
-        this.summonedUnitStatsElements[index].innerHTML = (`${this.summonedUnitCards[index].power}⚔️ ${this.summonedUnitCards[index].health}❤️`);
+        this.summonedUnitCards[index].summonId = index;
+        this.summonedUnitCards[index].summonLevel = card.summonLevel == undefined ? 1 : card.summonLevel;
     }
 
-    setSellingElements(index) {
+    setSummonedUnitStatsElement(index) {
+        this.summonedUnitStatsElements[index].style.setProperty("visibility", "visible");
+        for (let i = 0; i < 6; i++) {
+            this.summonedUnitStatsUpperElements[index].innerHTML = (
+                `⚔️${this.summonedUnitCards[index].power} / ${this.summonedUnitCards[index].health}❤️`
+            );
+
+            this.summonedUnitStatsLowerElements[index].innerHTML = (
+                `Lv ${this.summonedUnitCards[index].summonLevel} / ${TYPES.TYPES_ICONS[this.summonedUnitCards[index].type1]} ${TYPES.TYPES_ICONS[this.summonedUnitCards[index].type2]}`
+            );
+        }
+    }
+
+    setBoughtUnitElements() {
         for (let i = 0; i < this.sellingUnitCount; i++) {
             if (this.sellingUnitCards[i].baseX != this.sellingUnitRects[i].x
                 && this.sellingUnitCards[i].baseY != this.sellingUnitRects[i].y) {
@@ -517,8 +576,51 @@ class PlayMenu extends Menu {
                 while (this.sellingUnitElements[i].hasChildNodes()) {
                     this.sellingUnitElements[i].removeChild(this.sellingUnitElements[i].firstChild)
                 }
+
+                this.sellingUnitCards[i].image = new Image();
+                this.sellingUnitCards[i].x = undefined;
+                this.sellingUnitCards[i].y = undefined;
+                this.sellingUnitCards[i].width = undefined;
+                this.sellingUnitCards[i].height = undefined;
+
+                this.sellingUnitCards[i].baseX = undefined;
+                this.sellingUnitCards[i].baseY = undefined;
+
+                this.sellingUnitCards[i].imageSrc = undefined;
+                this.sellingUnitCards[i].name = undefined;
+                this.sellingUnitCards[i].tier = undefined;
+                this.sellingUnitCards[i].type1 = undefined;
+                this.sellingUnitCards[i].type2 = undefined;
+                this.sellingUnitCards[i].power = undefined;
+                this.sellingUnitCards[i].health = undefined;
+                this.sellingUnitCards[i].effectDesc = undefined;
+                this.sellingUnitCards[i].effectFunc = undefined;
             }
         }
+    }
+
+    removeSummonedUnitCard(index) {
+        this.summonedUnitCards[index].image = new Image();
+        this.summonedUnitCards[index].x = null;
+        this.summonedUnitCards[index].y = null;
+        this.summonedUnitCards[index].width = null;
+        this.summonedUnitCards[index].height = null;
+
+        this.summonedUnitCards[index].baseX = null;
+        this.summonedUnitCards[index].baseY = null;
+
+        this.summonedUnitCards[index].imageSrc = null;
+        this.summonedUnitCards[index].name = null;
+        this.summonedUnitCards[index].tier = null;
+        this.summonedUnitCards[index].type1 = null;
+        this.summonedUnitCards[index].type2 = null;
+        this.summonedUnitCards[index].power = null;
+        this.summonedUnitCards[index].health = null;
+        this.summonedUnitCards[index].effectDesc = null;
+        this.summonedUnitCards[index].effectFunc = null;
+
+        this.summonedUnitCards[index].summonId = null;
+        this.summonedUnitCards[index].summonLevel = null;
     }
 
 }

@@ -1,11 +1,14 @@
 class Card{
     constructor(params) {
         //For Canvas
-        this.image = new Image();
+        this.image = params.image;
         this.x = params.x;
         this.y = params.y;
         this.width = params.width;
         this.height = params.height;
+
+        this.baseX = this.x;
+        this.baseY = this.y;
 
         //For Stats
         this.image.src = params.imageSrc;
@@ -18,7 +21,8 @@ class Card{
         this.effectDesc = params.effectDesc;
         this.effectFunc = params.effectFunc;
 
-        this.baseX = this.x;
-        this.baseY = this.y;
+        //For when summoned
+        this.summonId = params.summonId;
+        this.summonLevel = params.summonLevel;
     }
 }

@@ -308,22 +308,21 @@ img {
 }
 
 .upper-center-container {
-    padding: 2.5% 0;
+    padding: 0 0 1% 0;
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: 90% 10%;
+    grid-template-rows: 85% 15%;
 }
 
-.upper-center-container .units-container {
+.upper-center-container .summoned-unit-container {
     display: grid;
     grid-template-columns: repeat(6, var(--summon-width));
     grid-template-rows: 1fr;
     justify-content: space-evenly;
     align-items: flex-end;
-
 }
 
-.upper-center-container .stats-container {
+.upper-center-container .summoned-stats-container {
     display: grid;
     grid-template-columns: repeat(6, var(--summon-width));
     grid-template-rows: 1fr;
@@ -331,7 +330,7 @@ img {
     align-items: center;
 }
 
-.summoned-unit-container {
+.summoned-unit-div {
     /*border: 2px solid var(--color-black);*/
     width: var(--summon-width);
     height: var(--summon-height);
@@ -340,41 +339,39 @@ img {
     justify-content: flex-end;
 }
 
-.summoned-unit-container img{
+.summoned-unit-div img{
     width: 100%;
-    height: 20%;
+    height: 30%;
     object-fit: contain;
     image-rendering: pixelated;
 }
 
-.summoned-stats-container{
+.summoned-stats-div{
     border: var(--card-border-width) solid var(--color-red);
     border-radius: var(--card-border-radius);
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    background-color: var(--color-red);
-}
-
-.summoned-stats-container .summoned-unit-types{
-    width: 35%;
-    height: 100%;
     background-color: var(--color-red);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 }
 
-.summoned-stats-container .summoned-unit-stats{
-    width: 65%;
-    height: 100%;
+.summoned-stats-div .unit-upper-stats{
+    width: 100%;
+    height: 50%;
     background-color: var(--color-white);
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
+}
+
+.summoned-stats-div .unit-lower-stats{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    color: var(--color-white);
+    justify-content: center ;
+    align-items: center;
 }
 
 .upper-right-container {}

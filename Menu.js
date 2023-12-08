@@ -140,7 +140,7 @@ class Menu {
 
     /* For menus where cards has interactions */
     onMouseOut = event => {
-        console.log("Mouse is outside of canvas")
+        //console.log("Mouse is outside of canvas")
     }
 
     getElementRect(element){
