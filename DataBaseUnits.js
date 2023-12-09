@@ -1,30 +1,3 @@
-window.Types = {
-    Race: {
-        Amphibian: "Amphibian",
-        Reptile: "Reptile",
-        Turtle: "Turtle",
-        Mammal: "Mammal",
-        Bird: "Bird"
-    },
-    RaceIcon: {
-        Amphibian: `🐸`,
-        Reptile: `🦎`,
-        Turtle: `🐢`,
-        Mammal: `🐾`,
-        Bird: `🐤`
-    },
-    Role: {
-        GrassStarter: "GrassStarter",
-        FireStarter: "FireStarter",
-        WaterStarter: "WaterStarter",
-    },
-    RoleIcon: {
-        GrassStarter: `🌿`,
-        FireStarter: `🔥`,
-        WaterStarter: `💧`,
-    },
-}
-
 window.TYPES = {
     TYPES_NAMES: {
         NONE: `NONE`,

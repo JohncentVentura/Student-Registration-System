@@ -1,4 +1,4 @@
-class DeckMenu extends Menu {
+class DeckMenu extends AbstractMenu {
     constructor(params) {
         super(params);
 
@@ -8,10 +8,6 @@ class DeckMenu extends Menu {
         this.tierTwoItemElements = [];
         this.tier3UnitElements = [];
         this.tierThreeItemElements = [];
-    }
-
-    update() {
-        //this.drawCardObjects();
     }
 
     launch() {
@@ -58,7 +54,7 @@ class DeckMenu extends Menu {
 
         //Creating Units Element & Adding Event Listener to each Units Element
         for (let i = 0; i < 12; i++) {
-            const tier1UnitElement = this.getSellingCardElement(
+            const tier1UnitElement = this.createTrunkCardElement(
                 this.gameEngine.unlockedTier1Units[i].imageSrc,
                 this.gameEngine.unlockedTier1Units[i].type1,
                 this.gameEngine.unlockedTier1Units[i].type2,
@@ -77,11 +73,12 @@ class DeckMenu extends Menu {
                     this.gameEngine.unlockedTier1Units[i].type2,
                     this.gameEngine.unlockedTier1Units[i].power,
                     this.gameEngine.unlockedTier1Units[i].health,
-                    this.gameEngine.unlockedTier1Units[i].effectDesc
+                    this.gameEngine.unlockedTier1Units[i].effectDesc,
+                    //this
                 );
             });
 
-            const tier2UnitElement = this.getSellingCardElement(
+            const tier2UnitElement = this.createTrunkCardElement(
                 this.gameEngine.unlockedTier2Units[i].imageSrc,
                 this.gameEngine.unlockedTier2Units[i].type1,
                 this.gameEngine.unlockedTier2Units[i].type2,
@@ -100,11 +97,12 @@ class DeckMenu extends Menu {
                     this.gameEngine.unlockedTier2Units[i].type2,
                     this.gameEngine.unlockedTier2Units[i].power,
                     this.gameEngine.unlockedTier2Units[i].health,
-                    this.gameEngine.unlockedTier2Units[i].effectDesc
+                    this.gameEngine.unlockedTier2Units[i].effectDesc,
+                    //this
                 );
             });
 
-            const tier3UnitElement = this.getSellingCardElement(
+            const tier3UnitElement = this.createTrunkCardElement(
                 this.gameEngine.unlockedTier3Units[i].imageSrc,
                 this.gameEngine.unlockedTier3Units[i].type1,
                 this.gameEngine.unlockedTier3Units[i].type2,
@@ -123,7 +121,8 @@ class DeckMenu extends Menu {
                     this.gameEngine.unlockedTier3Units[i].type2,
                     this.gameEngine.unlockedTier3Units[i].power,
                     this.gameEngine.unlockedTier3Units[i].health,
-                    this.gameEngine.unlockedTier3Units[i].effectDesc
+                    this.gameEngine.unlockedTier3Units[i].effectDesc,
+                    //this
                 );
             });
         }
@@ -145,7 +144,11 @@ class DeckMenu extends Menu {
         */
     }
 
-    getSellingCardElement(imageSrc, type1, type2, power, health) {
+    update() {
+        //this.drawCardObjects();
+    }
+
+    createTrunkCardElement(imageSrc, type1, type2, power, health) {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");
 

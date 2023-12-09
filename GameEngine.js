@@ -7,27 +7,6 @@ class GameEngine {
         this.canvas = this.container.querySelector(".game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.setGameScreenSize();
-
-        this.buttonDefaultImage = new Image();
-        this.buttonDefaultImage.src = "/Assets/Button Default.png";
-        this.buttonHoverImage = new Image();
-        this.buttonHoverImage.src = "/Assets/Button Hover.png";
-    }
-
-    update() {
-        const gameLoop = () => {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
-            //Only add/edit/remove codes below
-
-            if (this.currentMenu) { this.currentMenu.update(); }
-
-            //Only add/edit/remove codes above
-            requestAnimationFrame(() => {
-                gameLoop();
-            })
-        }
-        gameLoop();
     }
 
     launch() {
@@ -92,11 +71,27 @@ class GameEngine {
         this.playMenu = playMenu;
         this.deckMenu = deckMenu;
         this.gameBattle = gameBattle;
-
+        
         //Loading Complete, Starting Game
         this.currentMenu = this.startMenu;
         this.currentMenu.launch();
         this.update();
+    }
+
+    update() {
+        const gameLoop = () => {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.imageSmoothingEnabled = false; //So Pixel Art won't be filtered
+            //Only add/edit/remove codes below
+
+            if (this.currentMenu) { this.currentMenu.update(); }
+
+            //Only add/edit/remove codes above
+            requestAnimationFrame(() => {
+                gameLoop();
+            })
+        }
+        gameLoop();
     }
 
     setGameScreenSize() { //Sets width and height of elements in HTML & CSS

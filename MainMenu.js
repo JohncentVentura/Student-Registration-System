@@ -1,11 +1,8 @@
-class MainMenu extends Menu {
+class MainMenu extends AbstractMenu {
     constructor(params) {
         super(params);
         this.playSelectButton = null;
         this.deckSelectButton = null;
-    }
-
-    update() {
     }
 
     launch() {
@@ -36,5 +33,8 @@ class MainMenu extends Menu {
         this.backButton.addEventListener("mousedown", event => {
             this.gameEngine.changeMenu(this, this.gameEngine.startMenu);
         })
+    }
+
+    update() {
     }
 }
