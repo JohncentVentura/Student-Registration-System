@@ -53,11 +53,14 @@ class GameEngine {
         this.playingTier1Units = [];
         this.playingTier2Units = [];
         this.playingTier3Units = [];
-
         //Units that can be drawn when playing, add units with different tier here
         this.playingUnits = [];
-        this.holdingCards = [];
-        this.playingUnits = [];
+
+        this.lifePoints = 5;
+        this.manaPoints = 99;
+        this.waveCount = 1;
+        this.turnCount = 1;
+        //this.holdingCards = [];
         //*/
 
         //Initializating and assigning Menu Classes

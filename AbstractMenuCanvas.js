@@ -10,6 +10,26 @@ class AbstractMenuCanvas extends AbstractMenu{
         this.holdingCard = null;
     }
 
+    setLifePointsElement(points){
+        const element = document.querySelector(".life-points");
+        element.innerHTML = (`❤️Life Points: ${points}`);
+    }
+
+    setManaPointsElement(points){
+        const element = document.querySelector(".mana-points");
+        element.innerHTML = (`💎Mana Points: ${points}`);
+    }
+
+    setWaveCountElement(count){
+        const element = document.querySelector(".wave-count");
+        element.innerHTML = (`👾Wave Count: ${count}`);
+    }
+
+    setTurnCountElement(count){
+        const element = document.querySelector(".turn-count");
+        element.innerHTML = (`⏱️Turn Count: ${count}`);
+    }
+
     createSellingCardElement(type1, type2, power, health) {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");

@@ -133,7 +133,7 @@ img {
     background-color: var(--color-red);
     color: var(--color-white);
     clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
-    transform: translate(0.05rem, 0.05rem);
+    transform: translate(0.1rem, 0.1rem);
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -301,6 +301,7 @@ img {
     grid-column: 1 / span 3;
     display: flex;
     justify-content: space-evenly;
+    align-items: center;
 }
 
 .upper-left-container {

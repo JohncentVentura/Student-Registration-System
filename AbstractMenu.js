@@ -25,7 +25,7 @@ class AbstractMenu {
 
         //Prevents context menu when right clicking in the HTML element
         this.element.addEventListener("contextmenu", event => {
-            //if (event.button === 2) event.preventDefault();
+            if (event.button === 2) event.preventDefault();
         })
     }
 
@@ -90,11 +90,21 @@ class AbstractMenu {
 
         this.gameEngine.container.appendChild(this.cardBackgroundElement);
 
+        buttonFunc();
+
+        //Prevents context menu when right clicking in the canvas
+        this.gameEngine.canvas.addEventListener("contextmenu", event => {
+            if (event.button === 2) event.preventDefault();
+        })
+
+        //Prevents context menu when right clicking in the HTML element
+        this.cardBackgroundElement.addEventListener("contextmenu", event => {
+            if (event.button === 2) event.preventDefault();
+        })
+
         this.cardBackgroundElement.addEventListener("mousedown", event => {
             this.cardBackgroundElement.remove();
         })
-
-        buttonFunc();
     }
 
     setCardDisplayButton(){

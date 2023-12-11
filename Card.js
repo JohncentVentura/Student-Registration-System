@@ -21,8 +21,14 @@ class Card{
         this.effectDesc = params.effectDesc;
         this.effectFunc = params.effectFunc;
 
-        //For when summoned
+        //For Selling
+        this.sellingId = params.sellingId;
+        this.isSellingCardLocked = params.isSellingCardLocked;
+        this.lockedId = params.lockedId;
+
+        //For Summoning
         this.summonId = params.summonId;
         this.summonLevel = params.summonLevel;
+        this.summonSellCost = params.summonSellCost;
     }
 }

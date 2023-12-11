@@ -74,7 +74,7 @@ class DeckMenu extends AbstractMenu {
                     this.gameEngine.unlockedTier1Units[i].power,
                     this.gameEngine.unlockedTier1Units[i].health,
                     this.gameEngine.unlockedTier1Units[i].effectDesc,
-                    //this
+                    this.setCardDisplayButton
                 );
             });
 
@@ -98,7 +98,7 @@ class DeckMenu extends AbstractMenu {
                     this.gameEngine.unlockedTier2Units[i].power,
                     this.gameEngine.unlockedTier2Units[i].health,
                     this.gameEngine.unlockedTier2Units[i].effectDesc,
-                    //this
+                    this.setCardDisplayButton
                 );
             });
 
@@ -122,7 +122,7 @@ class DeckMenu extends AbstractMenu {
                     this.gameEngine.unlockedTier3Units[i].power,
                     this.gameEngine.unlockedTier3Units[i].health,
                     this.gameEngine.unlockedTier3Units[i].effectDesc,
-                    //this
+                    this.setCardDisplayButton
                 );
             });
         }
@@ -184,6 +184,13 @@ class DeckMenu extends AbstractMenu {
         return cardElement;
     }
 
+    setCardDisplayButton = () => {
+        const cardButton = document.createElement("button");
+        cardButton.classList.add("card-button");
+        cardButton.setAttribute(`type`, `button`);
+        cardButton.innerHTML = (`UwU`);
+        this.cardBackgroundElement.appendChild(cardButton);
+    }
 
 }
 /*

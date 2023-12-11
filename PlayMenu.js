@@ -9,6 +9,9 @@ class PlayMenu extends AbstractMenuCanvas {
         this.buttonHoverImage = new Image();
         this.buttonHoverImage.src = "/Assets/Button Hover.png";
 
+        this.rollSellingCardsCost = 1;
+        this.summoningCardCost = 3;
+
         this.sellingUnitCount = 4;
         this.sellingItemCount = 2;
 
@@ -24,7 +27,8 @@ class PlayMenu extends AbstractMenuCanvas {
         this.summonedUnitStatsUpperElements = [];
         this.summonedUnitStatsLowerElements = [];
 
-        this.lockedSummonedCards = [];
+        this.constHoldingCard = undefined;
+        this.constSummonedCards = [];
         this.lockedSellingCards = [];
     }
 
@@ -33,10 +37,10 @@ class PlayMenu extends AbstractMenuCanvas {
             `<div class="upper-container"> 
                 <img src="/Assets/BG Field.png" alt="BG Field.png" class="upper-image">
                 <div class="upper-header-container">
-                    <div>Life Points 5</div>
-                    <div>Mana 10</div>
-                    <div>Wave 12</div>
-                    <div>Turn 99</div>
+                    <div class="life-points"></div>
+                    <div class="mana-points"></div>
+                    <div class="wave-count"></div>
+                    <div class="turn-count"></div>
                 </div> 
 
                 <div class="upper-left-container">
@@ -72,6 +76,12 @@ class PlayMenu extends AbstractMenuCanvas {
                 </div>
             </div>`);
         this.element.style.setProperty('z-index', '-1'); //Canvas will be rendered before innerHTML so canvas is interactable
+
+        //upper-header-container-elements
+        this.setLifePointsElement(this.gameEngine.lifePoints);
+        this.setManaPointsElement(this.gameEngine.manaPoints);
+        this.setWaveCountElement(this.gameEngine.waveCount);
+        this.setTurnCountElement(this.gameEngine.turnCount);
 
         //upper-container-elements
         this.upperHeader = document.querySelector(".upper-header-container");
@@ -118,7 +128,41 @@ class PlayMenu extends AbstractMenuCanvas {
         this.gameEngine.playingUnits.push(...this.gameEngine.playingTier2Units);
         this.gameEngine.playingUnits.push(...this.gameEngine.playingTier3Units);
 
-        this.rollSellingCards();
+        if (this.sellingUnitCards.length == 0) {
+            this.rollSellingCards();
+        }
+        /*else {
+            //Remove all elements from this.sellingUnitElements
+            while (this.lowerCenterContainer.hasChildNodes()) {
+                this.lowerCenterContainer.removeChild(this.lowerCenterContainer.firstChild)
+            }
+
+            for (let i = 0; i < this.sellingUnitCards.length; i++) {
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.sellingUnitCards[i].type1,
+                    this.sellingUnitCards[i].type2,
+                    this.sellingUnitCards[i].power,
+                    this.sellingUnitCards[i].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+                this.sellingUnitRects.push(sellingUnitRect);
+
+                if (this.sellingUnitCards[i].summonId != undefined) {
+                    while (this.sellingUnitElements[i].hasChildNodes()) {
+                        this.sellingUnitElements[i].removeChild(this.sellingUnitElements[i].firstChild)
+                    }
+                }
+            }
+        }
+        */
+
+        this.summonedUnitElements = [];
+        this.summonedUnitRects = [];
+        this.summonedUnitStatsElements = [];
+        this.summonedUnitStatsUpperElements = [];
+        this.summonedUnitStatsLowerElements = [];
 
         for (let i = 0; i < 6; i++) {
             //Create Summoned Unit Elements
@@ -160,18 +204,22 @@ class PlayMenu extends AbstractMenuCanvas {
             this.summonedUnitStatsUpperElements.push(unitUpperStats);
             this.summonedUnitStatsLowerElements.push(unitLowerStats);
 
+            if (this.summonedUnitCards[i] != undefined && this.summonedUnitCards[i].summonId != undefined) {
+                this.setSummonedUnitStatsElement(i);
+            }
+
             //Create Summoned Unit Cards
             const tempSummonedUnitCard = new Card({
                 image: new Image(),
                 imageSrc: "",
-                name: null,
-                tier: null,
-                type1: null,
-                type2: null,
-                power: null,
-                health: null,
-                effectDesc: null,
-                effectFunc: null,
+                name: undefined,
+                tier: undefined,
+                type1: undefined,
+                type2: undefined,
+                power: undefined,
+                health: undefined,
+                effectDesc: undefined,
+                effectFunc: undefined,
             });
             this.summonedUnitCards.push(tempSummonedUnitCard);
         }
@@ -220,7 +268,47 @@ class PlayMenu extends AbstractMenuCanvas {
             this.lowerCenterContainer.removeChild(this.lowerCenterContainer.firstChild)
         }
 
-        for (let i = 0; i < this.sellingUnitCount; i++) {
+        //For Locked Selling Cards
+        for (let i = 0; i < this.lockedSellingCards.length; i++) {
+            const sellingUnitElement = this.createSellingCardElement(
+                this.lockedSellingCards[i].type1,
+                this.lockedSellingCards[i].type2,
+                this.lockedSellingCards[i].power,
+                this.lockedSellingCards[i].health
+            );
+            this.lowerCenterContainer.appendChild(sellingUnitElement);
+            this.sellingUnitElements.push(sellingUnitElement);
+            const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+            this.sellingUnitRects.push(sellingUnitRect);
+
+            this.setSellingUnitElementsStyles(i);
+
+            const sellingUnitCard = new Card({
+                image: this.lockedSellingCards[i].image,
+                x: this.sellingUnitRects[i].x,
+                y: this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05),
+                width: this.gameEngine.cardWidth,
+                height: this.gameEngine.cardHeight * 0.7,
+
+                imageSrc: this.lockedSellingCards[i].image.src,
+                name: this.lockedSellingCards[i].name,
+                tier: this.lockedSellingCards[i].tier,
+                type1: this.lockedSellingCards[i].type1,
+                type2: this.lockedSellingCards[i].type2,
+                power: this.lockedSellingCards[i].power,
+                health: this.lockedSellingCards[i].health,
+                effectDesc: this.lockedSellingCards[i].effectDesc,
+                effectFunc: this.lockedSellingCards[i].effectFunc,
+
+                sellingId: i,
+                isSellingCardLocked: true,
+                lockedId: this.lockedSellingCards[i].lockedId
+            });
+            this.sellingUnitCards.push(sellingUnitCard);
+        }
+
+        //For Rolled Selling Cards
+        for (let i = 0; i < this.sellingUnitCount - this.lockedSellingCards.length; i++) {
             rolledUnitCards.push(this.gameEngine.playingUnits[Math.floor(Math.random() * this.gameEngine.playingUnits.length)]);
 
             const sellingUnitElement = this.createSellingCardElement(
@@ -231,13 +319,13 @@ class PlayMenu extends AbstractMenuCanvas {
             );
             this.lowerCenterContainer.appendChild(sellingUnitElement);
             this.sellingUnitElements.push(sellingUnitElement);
-            const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+            const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i + this.lockedSellingCards.length]);
             this.sellingUnitRects.push(sellingUnitRect);
 
             const sellingUnitCard = new Card({
                 image: new Image(),
-                x: this.sellingUnitRects[i].x,
-                y: this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05),
+                x: this.sellingUnitRects[i + this.lockedSellingCards.length].x,
+                y: this.sellingUnitRects[i + this.lockedSellingCards.length].y + (this.sellingUnitRects[i + this.lockedSellingCards.length].y * 0.05),
                 width: this.gameEngine.cardWidth,
                 height: this.gameEngine.cardHeight * 0.7,
 
@@ -249,10 +337,17 @@ class PlayMenu extends AbstractMenuCanvas {
                 power: rolledUnitCards[i].power,
                 health: rolledUnitCards[i].health,
                 effectDesc: rolledUnitCards[i].effectDesc,
-                effectFunc: rolledUnitCards[i].effectFunc
+                effectFunc: rolledUnitCards[i].effectFunc,
+
+                sellingId: i + this.lockedSellingCards.length,
+                isSellingCardLocked: false,
+                lockedId: undefined
             });
             this.sellingUnitCards.push(sellingUnitCard);
         }
+
+        console.log("Rolled cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
+            "lockedSellingCards", this.lockedSellingCards);
     }
 
     onMouseMove = event => {
@@ -277,10 +372,8 @@ class PlayMenu extends AbstractMenuCanvas {
 
     onMouseDown = event => {
         this.onMouseDownOnCard(event, this.sellingUnitCards, this.summonedUnitCards);
-        //console.log("onMouseDown() this.holdingCard", this.holdingCard);
 
-        if (this.isMouseInRect(this.drawCardRect)) {
-            console.log("Draw cards")
+        if (this.isMouseInRect(this.drawCardRect) && this.gameEngine.manaPoints > 0) {
             this.rollSellingCards();
 
             for (let i = 0; i < this.summonedUnitCards.length; i++) {
@@ -289,7 +382,8 @@ class PlayMenu extends AbstractMenuCanvas {
                 }
             }
 
-            console.log("summonUnitCard() summoned&selling cards", this.summonedUnitCards, this.sellingUnitCards);
+            this.gameEngine.manaPoints -= this.rollSellingCardsCost;
+            this.setManaPointsElement(this.gameEngine.manaPoints);
         }
         else if (this.isMouseInRect(this.showDeckRect)) {
             this.gameEngine.changeMenu(this, this.gameEngine.deckMenu);
@@ -299,21 +393,9 @@ class PlayMenu extends AbstractMenuCanvas {
         }
     }
 
-    setCardDisplayButton = () => {
-        const cardButton = document.createElement("button");
-        cardButton.classList.add("card-button");
-        cardButton.setAttribute(`type`, `button`);
-        cardButton.innerHTML = (`Lock`)
-        this.cardBackgroundElement.appendChild(cardButton);
-
-        cardButton.addEventListener("mousedown", event => {
-            console.log("Selling Card is Locked");
-        })
-    }
-
     onMouseUp = event => {
-        //*
         if (this.isHoldingCard && this.holdingCard.x === this.holdingCard.baseX && this.holdingCard.y === this.holdingCard.baseY) {
+            this.constHoldingCard = this.holdingCard;
             this.createCardDisplayElement(
                 this.holdingCard.image.src,
                 this.holdingCard.name,
@@ -324,14 +406,8 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.holdingCard.health,
                 this.holdingCard.effectDesc,
                 this.setCardDisplayButton
-            );
+            )
         }
-
-        if (this.holdingCard != null && this.holdingCard != this.lockedSellingCards[0]) {
-            this.lockedSellingCards.push(this.holdingCard);
-            console.log("Push", this.lockedSellingCards)
-        }
-        //*/
 
         if (this.holdingCard && this.isCardInRect(this.holdingCard, this.summonedUnitRects[0]) && this.isHoldingCard) {
             this.summonUnitCard(0, this.holdingCard);
@@ -352,13 +428,75 @@ class PlayMenu extends AbstractMenuCanvas {
             this.summonUnitCard(5, this.holdingCard);
         }
         else if (this.isHoldingCard) {
-            console.log("Return to previous position");
+            //console.log("Return to previous position");
             this.holdingCard.x = this.holdingCard.baseX;
             this.holdingCard.y = this.holdingCard.baseY;
         }
 
         this.onMouseUpOnCard(event);
-        console.log("onMouseUp END")
+    }
+
+    setCardDisplayButton = () => {
+        const cardButton = document.createElement("button");
+        cardButton.classList.add("card-button");
+        cardButton.setAttribute(`type`, `button`);
+
+        if (this.constHoldingCard.summonId != undefined) cardButton.innerHTML = (`Sell Card`);
+        else if (this.constHoldingCard.isSellingCardLocked) cardButton.innerHTML = (`Unlock Card`);
+        else if (!this.constHoldingCard.isSellingCardLocked) cardButton.innerHTML = (`Lock Card`);
+        this.cardBackgroundElement.appendChild(cardButton);
+
+        cardButton.addEventListener("mousedown", event => {
+            if (this.constHoldingCard.summonId != undefined) {
+                this.gameEngine.manaPoints += this.constHoldingCard.summonSellCost;
+                this.setManaPointsElement(this.gameEngine.manaPoints);
+
+                this.summonedUnitStatsElements[this.constHoldingCard.summonId].style.setProperty("visibility", "hidden");
+                this.removeSummonedUnitCard(this.constHoldingCard.summonId);
+                //console.log("Sell summonedUnitCards", this.summonedUnitCards);
+            }
+            else if (this.constHoldingCard.isSellingCardLocked) {
+                this.sellingUnitElements[this.constHoldingCard.sellingId].style.setProperty("background-color", `var(--color-white)`);
+                this.sellingUnitElements[this.constHoldingCard.sellingId].style.setProperty("border-color", `var(--color-red)`);
+                this.sellingUnitElements[this.constHoldingCard.sellingId].querySelector(".card-types").style.setProperty("background-color", `var(--color-red)`);
+                this.sellingUnitElements[this.constHoldingCard.sellingId].querySelector(".card-image").style.setProperty("background-color", `var(--color-white)`);
+                this.sellingUnitElements[this.constHoldingCard.sellingId].querySelector(".card-stats").style.setProperty("background-color", `var(--color-red)`);
+                this.sellingUnitElements[this.constHoldingCard.sellingId].querySelector(".card-stats").style.setProperty("color", `var(--color-white)`);
+                this.unlockSellingUnitCard(this.constHoldingCard.sellingId, this.constHoldingCard.lockedId);
+            }
+            else if (!this.constHoldingCard.isSellingCardLocked) {
+                this.setSellingUnitElementsStyles(this.constHoldingCard.sellingId);
+                this.lockedSellingCards.push(this.constHoldingCard);
+                for (let i = 0; i < this.lockedSellingCards.length; i++) {
+                    this.lockedSellingCards[i].isSellingCardLocked = true;
+                    this.lockedSellingCards[i].lockedId = i;
+                }
+                console.log("Lock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
+                    "lockedSellingCards", this.lockedSellingCards);
+            }
+        })
+    }
+
+    unlockSellingUnitCard(sellingId, lockedId) {
+        this.sellingUnitCards[sellingId].isSellingCardLocked = false;
+        this.lockedSellingCards.splice(lockedId, 1);
+
+        for (let i = 0; i < this.lockedSellingCards.length; i++) {
+            this.lockedSellingCards[i].lockedId = i;
+        }
+
+        this.sellingUnitCards[sellingId].lockedId = undefined;
+        console.log("Unlock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
+            "lockedSellingCards", this.lockedSellingCards);
+    }
+
+    setSellingUnitElementsStyles(index) {
+        this.sellingUnitElements[index].style.setProperty("background-color", `var(--color-white)`);
+        this.sellingUnitElements[index].style.setProperty("border-color", `var(--color-grey)`);
+        this.sellingUnitElements[index].querySelector(".card-types").style.setProperty("background-color", `var(--color-grey)`);
+        this.sellingUnitElements[index].querySelector(".card-image").style.setProperty("background-color", `var(--color-white)`);
+        this.sellingUnitElements[index].querySelector(".card-stats").style.setProperty("background-color", `var(--color-grey)`);
+        this.sellingUnitElements[index].querySelector(".card-stats").style.setProperty("color", `var(--color-white)`);
     }
 
     summonUnitCard(index, card) {
@@ -381,11 +519,11 @@ class PlayMenu extends AbstractMenuCanvas {
             console.log("Move summoned card with summonId", card.summonId, "& replace summoned card in index", index);
 
             //CONSTANT ANTI-REFERENCE VARIABLES XD
-            this.lockedSummonedCards = [...this.summonedUnitCards];
-            const swappingId = this.lockedSummonedCards[card.summonId].summonId;
+            this.constSummonedCards = [...this.summonedUnitCards];
+            const swappingId = this.constSummonedCards[card.summonId].summonId;
 
-            this.summonedUnitCards[index] = this.lockedSummonedCards[swappingId];
-            this.summonedUnitCards[swappingId] = this.lockedSummonedCards[index];
+            this.summonedUnitCards[index] = this.constSummonedCards[swappingId];
+            this.summonedUnitCards[swappingId] = this.constSummonedCards[index];
 
             this.setSummonedUnitPosition(this.summonedUnitRects[index], this.summonedUnitCards[index]);
             this.setSummonedUnitPosition(this.summonedUnitRects[swappingId], this.summonedUnitCards[swappingId]);
@@ -399,12 +537,16 @@ class PlayMenu extends AbstractMenuCanvas {
             card.x = card.baseX;
             card.y = card.baseY;
         }
-        else if (this.summonedUnitCards[index].name == null) {
+        else if (this.summonedUnitCards[index].name == null && this.gameEngine.manaPoints >= this.summoningCardCost) {
             console.log("Summon bought card to an empty rect");
             this.setSummonedUnitPosition(this.summonedUnitRects[index], card);
             this.setSummonedUnitCard(index, card);
             this.setSummonedUnitStatsElement(index);
-            this.setBoughtUnitElements();
+            this.unlockSellingUnitCard(card.sellingId, card.lockedId);
+            this.setBoughtSellingUnitElements();
+
+            this.gameEngine.manaPoints -= this.summoningCardCost;
+            this.setManaPointsElement(this.gameEngine.manaPoints);
         }
     }
 
@@ -444,8 +586,12 @@ class PlayMenu extends AbstractMenuCanvas {
         this.summonedUnitCards[index].effectDesc = card.effectDesc;
         this.summonedUnitCards[index].effectFunc = card.effectFunc;
 
+        this.sellingId = undefined;
+        this.isSellingLocked = undefined;
+
         this.summonedUnitCards[index].summonId = index;
         this.summonedUnitCards[index].summonLevel = card.summonLevel == undefined ? 1 : card.summonLevel;
+        this.summonedUnitCards[index].summonSellCost = card.summonSellCost == undefined ? 1 : card.summonSellCost;
     }
 
     setSummonedUnitStatsElement(index) {
@@ -461,7 +607,7 @@ class PlayMenu extends AbstractMenuCanvas {
         }
     }
 
-    setBoughtUnitElements() {
+    setBoughtSellingUnitElements() {
         for (let i = 0; i < this.sellingUnitCount; i++) {
             if (this.sellingUnitCards[i].baseX != this.sellingUnitRects[i].x
                 && this.sellingUnitCards[i].baseY != this.sellingUnitRects[i].y) {
@@ -488,32 +634,36 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.sellingUnitCards[i].health = undefined;
                 this.sellingUnitCards[i].effectDesc = undefined;
                 this.sellingUnitCards[i].effectFunc = undefined;
+
+                this.sellingUnitCards[i].isSellingCardLocked = undefined;
+                this.sellingUnitCards[i].lockedId = undefined;
             }
         }
     }
 
     removeSummonedUnitCard(index) {
         this.summonedUnitCards[index].image = new Image();
-        this.summonedUnitCards[index].x = null;
-        this.summonedUnitCards[index].y = null;
-        this.summonedUnitCards[index].width = null;
-        this.summonedUnitCards[index].height = null;
+        this.summonedUnitCards[index].x = undefined;
+        this.summonedUnitCards[index].y = undefined;
+        this.summonedUnitCards[index].width = undefined;
+        this.summonedUnitCards[index].height = undefined;
 
-        this.summonedUnitCards[index].baseX = null;
-        this.summonedUnitCards[index].baseY = null;
+        this.summonedUnitCards[index].baseX = undefined;
+        this.summonedUnitCards[index].baseY = undefined;
 
-        this.summonedUnitCards[index].imageSrc = null;
-        this.summonedUnitCards[index].name = null;
-        this.summonedUnitCards[index].tier = null;
-        this.summonedUnitCards[index].type1 = null;
-        this.summonedUnitCards[index].type2 = null;
-        this.summonedUnitCards[index].power = null;
-        this.summonedUnitCards[index].health = null;
-        this.summonedUnitCards[index].effectDesc = null;
-        this.summonedUnitCards[index].effectFunc = null;
+        this.summonedUnitCards[index].imageSrc = undefined;
+        this.summonedUnitCards[index].name = undefined;
+        this.summonedUnitCards[index].tier = undefined;
+        this.summonedUnitCards[index].type1 = undefined;
+        this.summonedUnitCards[index].type2 = undefined;
+        this.summonedUnitCards[index].power = undefined;
+        this.summonedUnitCards[index].health = undefined;
+        this.summonedUnitCards[index].effectDesc = undefined;
+        this.summonedUnitCards[index].effectFunc = undefined;
 
-        this.summonedUnitCards[index].summonId = null;
-        this.summonedUnitCards[index].summonLevel = null;
+        this.summonedUnitCards[index].summonId = undefined;
+        this.summonedUnitCards[index].summonLevel = undefined;
+        this.summonedUnitCards[index].summonSellCost = undefined;
     }
 
 
