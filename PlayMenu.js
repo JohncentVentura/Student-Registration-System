@@ -11,18 +11,17 @@ class PlayMenu extends AbstractMenuCanvas {
 
         this.rollSellingCardsCost = 1;
         this.summoningCardCost = 3;
-
         this.sellingUnitCount = 4;
         this.sellingItemCount = 2;
 
-        this.sellingUnitElements = []; //For Selling Card Stats
-        this.sellingUnitRects = []; //For position of Card
+        this.rolledUnitCards = [];
         this.sellingUnitCards = [];
+        this.summonedUnitCards = [];
 
-        this.summonedUnitElements = []; //For border in CSS
-        this.summonedUnitRects = []; //For position of Card
-        this.summonedUnitCards = []; //For Back-End
-
+        this.sellingUnitElements = [];
+        this.sellingUnitRects = [];
+        this.summonedUnitElements = [];
+        this.summonedUnitRects = [];
         this.summonedUnitStatsElements = [];
         this.summonedUnitStatsUpperElements = [];
         this.summonedUnitStatsLowerElements = [];
@@ -36,36 +35,33 @@ class PlayMenu extends AbstractMenuCanvas {
         this.createMenuElement("play-menu",
             `<div class="upper-container"> 
                 <img src="/Assets/BG Field.png" alt="BG Field.png" class="upper-image">
-                <div class="upper-header-container">
-                    <div class="life-points"></div>
-                    <div class="mana-points"></div>
-                    <div class="wave-count"></div>
-                    <div class="turn-count"></div>
-                </div> 
 
                 <div class="upper-left-container">
-                    <h3>Types Synergies</h3>
-                    <div class="active-type-synergy">
-                        <div>🔥(Power +1)</div>    
-                    </div>
-                    <div class="inactive-type-synergy">
-                        <div>🔥(Power +1)</div>    
-                    </div>
+                    <div class="turn-count"></div>
+                    <div class="wave-count"></div>
+                    <div class="life-points"></div>
+                    <div class="mana-points"></div>
                 </div>
 
                 <div class="upper-center-container">
-                    <div class="summoned-unit-container"></div>
+                    <div class="summoned-types-container">
+                        <h3>Types Synergies</h3>
+                        <div class="active-type-synergy"></div>
+                        <div class="inactive-type-synergy"></div>
+                    </div>
+                    <div class="summoned-units-container"></div>
                     <div class="summoned-stats-container"></div>
                 </div>
 
                 <div class="upper-right-container">
+                    <button type="button" class="show-deck-button">Deck</button>
+                    <button type="button" class="show-types-button">Types</button>
                 </div>
             </div>
 
             <div class="lower-container">
                 <div class="lower-left-container">
                     <button type="button" class="draw-card-button">Draw</button>
-                    <button type="button" class="show-deck-button">Deck</button>
                 </div>
 
                 <div class="lower-center-container">
@@ -84,13 +80,14 @@ class PlayMenu extends AbstractMenuCanvas {
         this.setTurnCountElement(this.gameEngine.turnCount);
 
         //upper-container-elements
-        this.upperHeader = document.querySelector(".upper-header-container");
         this.upperContainer = document.querySelector(".upper-container");
         this.upperLeftContainer = document.querySelector(".upper-left-container");
         this.upperCenterContainer = document.querySelector(".upper-center-container");
         this.upperRightContainer = document.querySelector(".upper-right-container");
-        this.summonedUnitContainer = document.querySelector(".summoned-unit-container");
+        this.summonedUnitContainer = document.querySelector(".summoned-units-container");
         this.summonedStatsContainer = document.querySelector(".summoned-stats-container");
+        this.activeTypeContainer = document.querySelector(".active-type-synergy");
+        this.inactiveTypeContainer = document.querySelector(".inactive-type-synergy");
 
         //lower-container-elements
         this.lowerContainer = document.querySelector(".lower-container");
@@ -99,13 +96,15 @@ class PlayMenu extends AbstractMenuCanvas {
         this.lowerRightContainer = document.querySelector(".lower-right-container");
 
         //Canvas Elements & Rects
-        this.drawCardButton = document.querySelector(".draw-card-button");
         this.showDeckButton = document.querySelector(".show-deck-button");
+        this.showTypesButton = document.querySelector(".show-types-button");
+        this.drawCardButton = document.querySelector(".draw-card-button");
         this.gameBattleButton = document.querySelector(".game-battle-button");
+        this.showDeckRect = this.getElementRect(this.showDeckButton);
+        this.showTypesRect = this.getElementRect(this.showTypesButton);
         this.drawCardRect = this.getElementRect(this.drawCardButton);
         this.gameBattleRect = this.getElementRect(this.gameBattleButton);
-        this.showDeckRect = this.getElementRect(this.showDeckButton);
-
+        
         /*for (let i = 0; i < 5; i++) {
             const holdingCardSlot = document.createElement("div");
             holdingCardSlot.classList.add("holding-card-slot");
@@ -128,35 +127,7 @@ class PlayMenu extends AbstractMenuCanvas {
         this.gameEngine.playingUnits.push(...this.gameEngine.playingTier2Units);
         this.gameEngine.playingUnits.push(...this.gameEngine.playingTier3Units);
 
-        if (this.sellingUnitCards.length == 0) {
-            this.rollSellingCards();
-        }
-        /*else {
-            //Remove all elements from this.sellingUnitElements
-            while (this.lowerCenterContainer.hasChildNodes()) {
-                this.lowerCenterContainer.removeChild(this.lowerCenterContainer.firstChild)
-            }
-
-            for (let i = 0; i < this.sellingUnitCards.length; i++) {
-                const sellingUnitElement = this.createSellingCardElement(
-                    this.sellingUnitCards[i].type1,
-                    this.sellingUnitCards[i].type2,
-                    this.sellingUnitCards[i].power,
-                    this.sellingUnitCards[i].health
-                );
-                this.lowerCenterContainer.appendChild(sellingUnitElement);
-                this.sellingUnitElements.push(sellingUnitElement);
-                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
-                this.sellingUnitRects.push(sellingUnitRect);
-
-                if (this.sellingUnitCards[i].summonId != undefined) {
-                    while (this.sellingUnitElements[i].hasChildNodes()) {
-                        this.sellingUnitElements[i].removeChild(this.sellingUnitElements[i].firstChild)
-                    }
-                }
-            }
-        }
-        */
+        this.rollSellingCards();
 
         this.summonedUnitElements = [];
         this.summonedUnitRects = [];
@@ -208,20 +179,22 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.setSummonedUnitStatsElement(i);
             }
 
-            //Create Summoned Unit Cards
-            const tempSummonedUnitCard = new Card({
-                image: new Image(),
-                imageSrc: "",
-                name: undefined,
-                tier: undefined,
-                type1: undefined,
-                type2: undefined,
-                power: undefined,
-                health: undefined,
-                effectDesc: undefined,
-                effectFunc: undefined,
-            });
-            this.summonedUnitCards.push(tempSummonedUnitCard);
+            if (this.summonedUnitCards.length != 6) {
+                //Create Summoned Unit Cards
+                const tempSummonedUnitCard = new Card({
+                    image: new Image(),
+                    imageSrc: "",
+                    name: undefined,
+                    tier: undefined,
+                    type1: undefined,
+                    type2: undefined,
+                    power: undefined,
+                    health: undefined,
+                    effectDesc: undefined,
+                    effectFunc: undefined,
+                });
+                this.summonedUnitCards.push(tempSummonedUnitCard);
+            }
         }
     }
 
@@ -231,18 +204,25 @@ class PlayMenu extends AbstractMenuCanvas {
         this.gameEngine.canvas.onmouseup = this.onMouseUp;
         this.gameEngine.canvas.onmouseout = this.onMouseOut;
 
-        //Draw the Draw Button
-        if (this.isMouseInRect(this.drawCardRect)) {
-            this.gameEngine.ctx.drawImage(this.buttonHoverImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
-        } else {
-            this.gameEngine.ctx.drawImage(this.buttonDefaultImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
-        }
-
         //Show Deck Button
         if (this.isMouseInRect(this.showDeckRect)) {
             this.gameEngine.ctx.drawImage(this.buttonHoverImage, this.showDeckRect.x, this.showDeckRect.y, this.showDeckRect.width, this.showDeckRect.height);
         } else {
             this.gameEngine.ctx.drawImage(this.buttonDefaultImage, this.showDeckRect.x, this.showDeckRect.y, this.showDeckRect.width, this.showDeckRect.height);
+        }
+
+        //Show Deck Button
+        if (this.isMouseInRect(this.showTypesRect)) {
+            this.gameEngine.ctx.drawImage(this.buttonHoverImage, this.showTypesRect.x, this.showTypesRect.y, this.showTypesRect.width, this.showTypesRect.height);
+        } else {
+            this.gameEngine.ctx.drawImage(this.buttonDefaultImage, this.showTypesRect.x, this.showTypesRect.y, this.showTypesRect.width, this.showTypesRect.height);
+        }
+
+        //Draw the Draw Button
+        if (this.isMouseInRect(this.drawCardRect)) {
+            this.gameEngine.ctx.drawImage(this.buttonHoverImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
+        } else {
+            this.gameEngine.ctx.drawImage(this.buttonDefaultImage, this.drawCardRect.x, this.drawCardRect.y, this.drawCardRect.width, this.drawCardRect.height);
         }
 
         //Draw Battle Button
@@ -258,93 +238,157 @@ class PlayMenu extends AbstractMenuCanvas {
     }
 
     rollSellingCards() {
-        let rolledUnitCards = [];
         this.sellingUnitElements = [];
         this.sellingUnitRects = [];
-        this.sellingUnitCards = [];
 
         //Remove all elements from this.sellingUnitElements
         while (this.lowerCenterContainer.hasChildNodes()) {
             this.lowerCenterContainer.removeChild(this.lowerCenterContainer.firstChild)
         }
 
+        if (this.sellingUnitCards.length == 0) {
+            //For Locked Selling Cards
+            for (let i = 0; i < this.lockedSellingCards.length; i++) {
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.lockedSellingCards[i].type1,
+                    this.lockedSellingCards[i].type2,
+                    this.lockedSellingCards[i].power,
+                    this.lockedSellingCards[i].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+                this.sellingUnitRects.push(sellingUnitRect);
+                this.setSellingUnitElementsStyles(i);
+
+                const sellingUnitCard = new Card({
+                    image: this.lockedSellingCards[i].image,
+                    x: this.sellingUnitRects[i].x,
+                    y: this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05),
+                    width: this.gameEngine.cardWidth,
+                    height: this.gameEngine.cardHeight * 0.7,
+
+                    imageSrc: this.lockedSellingCards[i].image.src,
+                    name: this.lockedSellingCards[i].name,
+                    tier: this.lockedSellingCards[i].tier,
+                    type1: this.lockedSellingCards[i].type1,
+                    type2: this.lockedSellingCards[i].type2,
+                    power: this.lockedSellingCards[i].power,
+                    health: this.lockedSellingCards[i].health,
+                    effectDesc: this.lockedSellingCards[i].effectDesc,
+                    effectFunc: this.lockedSellingCards[i].effectFunc,
+
+                    sellingId: i,
+                    isSellingCardLocked: true,
+                    lockedId: this.lockedSellingCards[i].lockedId
+                });
+                this.sellingUnitCards.push(sellingUnitCard);
+            }
+
+            //For Rolled Selling Cards
+            for (let i = 0; i < this.sellingUnitCount - this.lockedSellingCards.length; i++) {
+                this.rolledUnitCards.push(this.gameEngine.playingUnits[Math.floor(Math.random() * this.gameEngine.playingUnits.length)]);
+
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.rolledUnitCards[i].type1,
+                    this.rolledUnitCards[i].type2,
+                    this.rolledUnitCards[i].power,
+                    this.rolledUnitCards[i].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i + this.lockedSellingCards.length]);
+                this.sellingUnitRects.push(sellingUnitRect);
+
+                const sellingUnitCard = new Card({
+                    image: new Image(),
+                    x: this.sellingUnitRects[i + this.lockedSellingCards.length].x,
+                    y: this.sellingUnitRects[i + this.lockedSellingCards.length].y + (this.sellingUnitRects[i + this.lockedSellingCards.length].y * 0.05),
+                    width: this.gameEngine.cardWidth,
+                    height: this.gameEngine.cardHeight * 0.7,
+
+                    imageSrc: this.rolledUnitCards[i].imageSrc,
+                    name: this.rolledUnitCards[i].name,
+                    tier: this.rolledUnitCards[i].tier,
+                    type1: this.rolledUnitCards[i].type1,
+                    type2: this.rolledUnitCards[i].type2,
+                    power: this.rolledUnitCards[i].power,
+                    health: this.rolledUnitCards[i].health,
+                    effectDesc: this.rolledUnitCards[i].effectDesc,
+                    effectFunc: this.rolledUnitCards[i].effectFunc,
+
+                    sellingId: i + this.lockedSellingCards.length,
+                    isSellingCardLocked: false,
+                    lockedId: undefined
+                });
+                this.sellingUnitCards.push(sellingUnitCard);
+            }
+        }
+        else if (this.sellingUnitCards.length != 0) { //Returning back from DeckMenu
+            for (let i = 0; i < this.sellingUnitCount; i++) {
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.sellingUnitCards[i].type1,
+                    this.sellingUnitCards[i].type2,
+                    this.sellingUnitCards[i].power,
+                    this.sellingUnitCards[i].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+                this.sellingUnitRects.push(sellingUnitRect);
+
+                if (this.sellingUnitCards[i].lockedId != undefined) {
+                    this.setSellingUnitElementsStyles(i);
+                }
+
+                if (this.sellingUnitCards[i].x == undefined && this.sellingUnitCards[i].y == undefined) {
+                    while (this.sellingUnitElements[i].hasChildNodes()) {
+                        this.sellingUnitElements[i].removeChild(this.sellingUnitElements[i].firstChild)
+                    }
+                }
+            }
+        }
+
+        /*
         //For Locked Selling Cards
-        for (let i = 0; i < this.lockedSellingCards.length; i++) {
-            const sellingUnitElement = this.createSellingCardElement(
-                this.lockedSellingCards[i].type1,
-                this.lockedSellingCards[i].type2,
-                this.lockedSellingCards[i].power,
-                this.lockedSellingCards[i].health
-            );
-            this.lowerCenterContainer.appendChild(sellingUnitElement);
-            this.sellingUnitElements.push(sellingUnitElement);
-            const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
-            this.sellingUnitRects.push(sellingUnitRect);
+            for (let i = 0; i < this.lockedSellingCards.length; i++) {
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.lockedSellingCards[i].type1,
+                    this.lockedSellingCards[i].type2,
+                    this.lockedSellingCards[i].power,
+                    this.lockedSellingCards[i].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i]);
+                this.sellingUnitRects.push(sellingUnitRect);
 
-            this.setSellingUnitElementsStyles(i);
+                this.sellingUnitCards[i].x = this.sellingUnitRects[i].x;
+                this.sellingUnitCards[i].y = this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05);
+            }
+            //For Rolled Selling Cards
+            for (let i = 0; i < this.sellingUnitCount - this.lockedSellingCards.length; i++) {
+                const sellingUnitElement = this.createSellingCardElement(
+                    this.sellingUnitCards[i + this.lockedSellingCards.length].type1 ? this.sellingUnitCards[i + this.lockedSellingCards.length].type1 : '',
+                    this.sellingUnitCards[i + this.lockedSellingCards.length].type2,
+                    this.sellingUnitCards[i + this.lockedSellingCards.length].power,
+                    this.sellingUnitCards[i + this.lockedSellingCards.length].health
+                );
+                this.lowerCenterContainer.appendChild(sellingUnitElement);
+                this.sellingUnitElements.push(sellingUnitElement);
+                const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i + this.lockedSellingCards.length]);
+                this.sellingUnitRects.push(sellingUnitRect);
 
-            const sellingUnitCard = new Card({
-                image: this.lockedSellingCards[i].image,
-                x: this.sellingUnitRects[i].x,
-                y: this.sellingUnitRects[i].y + (this.sellingUnitRects[i].y * 0.05),
-                width: this.gameEngine.cardWidth,
-                height: this.gameEngine.cardHeight * 0.7,
-
-                imageSrc: this.lockedSellingCards[i].image.src,
-                name: this.lockedSellingCards[i].name,
-                tier: this.lockedSellingCards[i].tier,
-                type1: this.lockedSellingCards[i].type1,
-                type2: this.lockedSellingCards[i].type2,
-                power: this.lockedSellingCards[i].power,
-                health: this.lockedSellingCards[i].health,
-                effectDesc: this.lockedSellingCards[i].effectDesc,
-                effectFunc: this.lockedSellingCards[i].effectFunc,
-
-                sellingId: i,
-                isSellingCardLocked: true,
-                lockedId: this.lockedSellingCards[i].lockedId
-            });
-            this.sellingUnitCards.push(sellingUnitCard);
-        }
-
-        //For Rolled Selling Cards
-        for (let i = 0; i < this.sellingUnitCount - this.lockedSellingCards.length; i++) {
-            rolledUnitCards.push(this.gameEngine.playingUnits[Math.floor(Math.random() * this.gameEngine.playingUnits.length)]);
-
-            const sellingUnitElement = this.createSellingCardElement(
-                rolledUnitCards[i].type1,
-                rolledUnitCards[i].type2,
-                rolledUnitCards[i].power,
-                rolledUnitCards[i].health
-            );
-            this.lowerCenterContainer.appendChild(sellingUnitElement);
-            this.sellingUnitElements.push(sellingUnitElement);
-            const sellingUnitRect = this.getElementRect(this.sellingUnitElements[i + this.lockedSellingCards.length]);
-            this.sellingUnitRects.push(sellingUnitRect);
-
-            const sellingUnitCard = new Card({
-                image: new Image(),
-                x: this.sellingUnitRects[i + this.lockedSellingCards.length].x,
-                y: this.sellingUnitRects[i + this.lockedSellingCards.length].y + (this.sellingUnitRects[i + this.lockedSellingCards.length].y * 0.05),
-                width: this.gameEngine.cardWidth,
-                height: this.gameEngine.cardHeight * 0.7,
-
-                imageSrc: rolledUnitCards[i].imageSrc,
-                name: rolledUnitCards[i].name,
-                tier: rolledUnitCards[i].tier,
-                type1: rolledUnitCards[i].type1,
-                type2: rolledUnitCards[i].type2,
-                power: rolledUnitCards[i].power,
-                health: rolledUnitCards[i].health,
-                effectDesc: rolledUnitCards[i].effectDesc,
-                effectFunc: rolledUnitCards[i].effectFunc,
-
-                sellingId: i + this.lockedSellingCards.length,
-                isSellingCardLocked: false,
-                lockedId: undefined
-            });
-            this.sellingUnitCards.push(sellingUnitCard);
-        }
+                this.sellingUnitCards[i + this.lockedSellingCards.length].x = this.sellingUnitRects[i + this.lockedSellingCards.length].x;
+                this.sellingUnitCards[i + this.lockedSellingCards.length].y = this.sellingUnitRects[i + this.lockedSellingCards.length].y + (this.sellingUnitRects[i + this.lockedSellingCards.length].y * 0.05);
+            }
+            for (let i = 0; i < this.sellingUnitCount; i++) {
+                if (this.sellingUnitCards[i].lockedId != undefined) {
+                    this.setSellingUnitElementsStyles(i);
+                }
+            }
+            console.log("Previous rolled cards after returnign from DeckMenu");
+        */
 
         console.log("Rolled cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
             "lockedSellingCards", this.lockedSellingCards);
@@ -373,7 +417,15 @@ class PlayMenu extends AbstractMenuCanvas {
     onMouseDown = event => {
         this.onMouseDownOnCard(event, this.sellingUnitCards, this.summonedUnitCards);
 
-        if (this.isMouseInRect(this.drawCardRect) && this.gameEngine.manaPoints > 0) {
+        if (this.isMouseInRect(this.showDeckRect)) {
+            this.gameEngine.changeMenu(this, this.gameEngine.deckMenu);
+        }
+        else if (this.isMouseInRect(this.showTypesRect)) {
+            console.log("Show Types Synergies")
+        }
+        else if (this.isMouseInRect(this.drawCardRect) && this.gameEngine.manaPoints >= this.rollSellingCardsCost) {
+            this.rolledUnitCards = [];
+            this.sellingUnitCards = [];
             this.rollSellingCards();
 
             for (let i = 0; i < this.summonedUnitCards.length; i++) {
@@ -384,9 +436,6 @@ class PlayMenu extends AbstractMenuCanvas {
 
             this.gameEngine.manaPoints -= this.rollSellingCardsCost;
             this.setManaPointsElement(this.gameEngine.manaPoints);
-        }
-        else if (this.isMouseInRect(this.showDeckRect)) {
-            this.gameEngine.changeMenu(this, this.gameEngine.deckMenu);
         }
         else if (this.isMouseInRect(this.gameBattleRect)) {
             console.log("Start Battle")
@@ -471,8 +520,7 @@ class PlayMenu extends AbstractMenuCanvas {
                     this.lockedSellingCards[i].isSellingCardLocked = true;
                     this.lockedSellingCards[i].lockedId = i;
                 }
-                console.log("Lock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
-                    "lockedSellingCards", this.lockedSellingCards);
+                console.log("Lock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
             }
         })
     }
@@ -486,8 +534,7 @@ class PlayMenu extends AbstractMenuCanvas {
         }
 
         this.sellingUnitCards[sellingId].lockedId = undefined;
-        console.log("Unlock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
-            "lockedSellingCards", this.lockedSellingCards);
+        console.log("Unlock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
     }
 
     setSellingUnitElementsStyles(index) {

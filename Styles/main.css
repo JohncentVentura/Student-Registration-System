@@ -54,7 +54,7 @@ body {
     left: 0;
     width: var(--game-width);
     height: var(--game-height);
-    background-color: cadetblue;
+    background-color: var(--color-red);
 }
 
 .start-menu {
@@ -133,7 +133,7 @@ img {
     background-color: var(--color-red);
     color: var(--color-white);
     clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
-    transform: translate(0.1rem, 0.1rem);
+    transform: translate(0.05rem, 0.05rem);
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -149,6 +149,7 @@ img {
 
 .card-display .card-stat{
     margin: 0 5% 0 5%;
+    font-size: 1rem;
 }
 
 .card-background .card-button {
@@ -224,7 +225,7 @@ img {
 /* Deck Menu - Card Element*/
 .card-element {
     margin: 0.5%;
-    /* BORDER LINE-WIDTH VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    /* BORDER LINE-WIDTH VALUE IS USED IN PlayMenu.js rollSellingCards() */
     border: var(--card-border-width) solid var(--color-red);
     border-radius: var(--card-border-radius);
     width: var(--card-width);
@@ -249,7 +250,7 @@ img {
 .card-element .card-types,
 .card-element .card-stats {
     width: 100%;
-    /* HEIGHT VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    /* HEIGHT VALUE IS USED IN PlayMenu.js rollSellingCards() */
     height: 15%;
     background-color: var(--color-red);
     color: var(--color-white);
@@ -265,7 +266,7 @@ img {
 
 .card-element .card-image {
     width: 100%;
-    /* HEIGHT VALUE IS USED IN PlayMenu.js rollHoldingCards() */
+    /* HEIGHT VALUE IS USED IN PlayMenu.js rollSellingCards() */
     height: 70%;
     background-color: var(--color-white);
     object-fit: contain;
@@ -281,52 +282,65 @@ img {
 
 /* Play Menu Upper Container */
 .play-menu .upper-container {
-    height: 60%;
+    height: 65%;
     object-fit: contain;
     display: grid;
     grid-template-columns: 15% 70% 15%;
-    grid-template-rows: 15% 85%;
+    grid-template-rows: 100%;
 }
 
 .upper-container .upper-image {
     position: absolute;
     z-index: -2;
     width: 100%;
-    height: 60%;
+    height: 65%;
     object-fit: fill;
 }
 
-.upper-container .upper-header-container {
-    background-color: sandybrown;
-    grid-column: 1 / span 3;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.upper-left-container {
-    margin: 4%;
-    border-radius: var(--card-border-radius);
+.upper-container .upper-left-container{
+    margin: 1rem 0 0 1rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
 }
 
-.upper-left-container .active-type-synergy {}
-
-.upper-left-container .inactive-type-synergy {
-    filter: grayscale(100%);
+.turn-count, .wave-count, .life-points, .mana-points{
+    margin: 2%;
+    border: 0.2rem solid var(--color-red);
+    border-radius: 5%;
+    width: 70%;
+    height: auto;
+    background-color: var(--color-white);
 }
 
 .upper-center-container {
+    margin: 1rem 0 0 0;
     padding: 0 0 1% 0;
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: 85% 15%;
+    grid-template-rows: 20% 65% 15%;
 }
 
-.upper-center-container .summoned-unit-container {
+.upper-center-container .summoned-types-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.summoned-types-container .active-type-synergy,
+.summoned-types-container .inactive-type-synergy {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.summoned-types-container .inactive-type-synergy {
+    filter: grayscale(100%);
+}
+
+.upper-center-container .summoned-units-container {
     display: grid;
     grid-template-columns: repeat(6, var(--summon-width));
     grid-template-rows: 1fr;
@@ -339,6 +353,14 @@ img {
     grid-template-columns: repeat(6, var(--summon-width));
     grid-template-rows: 1fr;
     justify-content: space-evenly;
+    align-items: center;
+}
+
+.upper-container .upper-right-container{
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -392,7 +414,7 @@ img {
 .play-menu .lower-container {
     padding: 1%;
     width: 100%;
-    height: 40%;
+    height: 35%;
     background: rgb(217, 95, 76);
     background: linear-gradient(342deg, rgba(217, 95, 76, 1) 0%, rgba(217, 95, 76, 1) 50%, rgba(255, 255, 255, 1) 50%);
     display: flex;
