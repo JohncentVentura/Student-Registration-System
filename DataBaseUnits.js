@@ -11,7 +11,7 @@ window.TYPES = {
         METAL: `METAL`
     },
     TYPES_ICONS: {
-        NONE: ``,
+        NONE: ` `,
         FIRE: `🔥`,
         WATER: `💧`,
         AIR: `💨`,

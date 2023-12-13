@@ -1,8 +1,8 @@
-class AbstractMenuCanvas extends AbstractMenu{
+class AbstractMenuCanvas extends AbstractMenu {
     constructor(params) {
         super(params);
         if (this.constructor == AbstractMenuCanvas) { throw new Error("Abstract classes can't be instantiated.") }
-    
+
         //Mouse
         this.mouseX = 0;
         this.mouseY = 0;
@@ -10,26 +10,26 @@ class AbstractMenuCanvas extends AbstractMenu{
         this.holdingCard = null;
     }
 
-    setTurnCountElement(count){
+    setTurnCountElement(count) {
         const element = document.querySelector(".turn-count");
         element.innerHTML = (`⏱️Turn: ${count}`);
     }
 
-    setWaveCountElement(count){
+    setWaveCountElement(count) {
         const element = document.querySelector(".wave-count");
         element.innerHTML = (`👾Wave: ${count}`);
     }
 
-    setLifePointsElement(points){
+    setLifePointsElement(points) {
         const element = document.querySelector(".life-points");
         element.innerHTML = (`❤️Life Points: ${points}`);
     }
 
-    setManaPointsElement(points){
+    setManaPointsElement(points) {
         const element = document.querySelector(".mana-points");
         element.innerHTML = (`💎Mana Points: ${points}`);
     }
-    
+
     createSellingCardElement(type1, type2, power, health) {
         const cardElement = document.createElement("div");
         cardElement.classList.add("card-element");

@@ -17,7 +17,8 @@ class PlayMenu extends AbstractMenuCanvas {
         this.rolledUnitCards = [];
         this.sellingUnitCards = [];
         this.summonedUnitCards = [];
-
+        this.typeSynergy = new TypeSynergy();
+        
         this.sellingUnitElements = [];
         this.sellingUnitRects = [];
         this.summonedUnitElements = [];
@@ -104,7 +105,7 @@ class PlayMenu extends AbstractMenuCanvas {
         this.showTypesRect = this.getElementRect(this.showTypesButton);
         this.drawCardRect = this.getElementRect(this.drawCardButton);
         this.gameBattleRect = this.getElementRect(this.gameBattleButton);
-        
+
         /*for (let i = 0; i < 5; i++) {
             const holdingCardSlot = document.createElement("div");
             holdingCardSlot.classList.add("holding-card-slot");
@@ -196,6 +197,9 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.summonedUnitCards.push(tempSummonedUnitCard);
             }
         }
+
+        console.log("Launch cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards,
+            "lockedSellingCards", this.lockedSellingCards);
     }
 
     update() {
@@ -435,7 +439,7 @@ class PlayMenu extends AbstractMenuCanvas {
             }
 
             this.gameEngine.manaPoints -= this.rollSellingCardsCost;
-            this.setManaPointsElement(this.gameEngine.manaPoints);
+            this.setManaPointsElement(this.rollSellingCardsCost);
         }
         else if (this.isMouseInRect(this.gameBattleRect)) {
             console.log("Start Battle")
@@ -501,6 +505,7 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.setManaPointsElement(this.gameEngine.manaPoints);
 
                 this.summonedUnitStatsElements[this.constHoldingCard.summonId].style.setProperty("visibility", "hidden");
+                this.setTypeSynergies();
                 this.removeSummonedUnitCard(this.constHoldingCard.summonId);
                 //console.log("Sell summonedUnitCards", this.summonedUnitCards);
             }
@@ -520,7 +525,7 @@ class PlayMenu extends AbstractMenuCanvas {
                     this.lockedSellingCards[i].isSellingCardLocked = true;
                     this.lockedSellingCards[i].lockedId = i;
                 }
-                console.log("Lock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
+                //console.log("Lock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
             }
         })
     }
@@ -534,7 +539,7 @@ class PlayMenu extends AbstractMenuCanvas {
         }
 
         this.sellingUnitCards[sellingId].lockedId = undefined;
-        console.log("Unlock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
+        //console.log("Unlock cards: summonedUnitCards", this.summonedUnitCards, "sellingUnitCards", this.sellingUnitCards, "lockedSellingCards", this.lockedSellingCards);
     }
 
     setSellingUnitElementsStyles(index) {
@@ -588,6 +593,7 @@ class PlayMenu extends AbstractMenuCanvas {
             console.log("Summon bought card to an empty rect");
             this.setSummonedUnitPosition(this.summonedUnitRects[index], card);
             this.setSummonedUnitCard(index, card);
+            this.setTypeSynergies();
             this.setSummonedUnitStatsElement(index);
             this.unlockSellingUnitCard(card.sellingId, card.lockedId);
             this.setBoughtSellingUnitElements();
@@ -639,6 +645,32 @@ class PlayMenu extends AbstractMenuCanvas {
         this.summonedUnitCards[index].summonId = index;
         this.summonedUnitCards[index].summonLevel = card.summonLevel == undefined ? 1 : card.summonLevel;
         this.summonedUnitCards[index].summonSellCost = card.summonSellCost == undefined ? 1 : card.summonSellCost;
+    }
+
+    setTypeSynergies() {
+        this.typeSynergy.resetAllTypesCount();
+
+        for (let i = 0; i < this.summonedUnitCards.length; i++) {
+            if (this.summonedUnitCards[i].summonId != undefined) {
+                this.typeSynergy.addTypeCount(this.summonedUnitCards[i].type1);
+                this.typeSynergy.addTypeCount(this.summonedUnitCards[i].type2);
+            }
+        }
+
+        for (let i = 0; i < this.summonedUnitCards.length; i++) {
+            if (this.summonedUnitCards[i].summonId != undefined && !this.typeSynergy.synergies.includes(this.summonedUnitCards[i].type1)) {
+                this.typeSynergy.synergies.push(this.summonedUnitCards[i].type1)
+                this.activeTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.synergies[i]));
+            }
+
+            if (this.summonedUnitCards[i].summonId != undefined && !this.typeSynergy.synergies.includes(this.summonedUnitCards[i].type2)) {
+                this.typeSynergy.synergies.push(this.summonedUnitCards[i].type2)
+                this.activeTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.synergies[i]));
+            }
+        }
+
+        console.log("this.typeSynergy.synergies",this.typeSynergy.synergies);
+        this.typeSynergy.printAllTypesCount();
     }
 
     setSummonedUnitStatsElement(index) {
