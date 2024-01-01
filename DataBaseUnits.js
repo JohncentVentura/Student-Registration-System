@@ -14,10 +14,10 @@ window.TYPES = {
         NONE: ` `,
         FIRE: `🔥`,
         WATER: `💧`,
-        AIR: `💨`,
+        AIR: `🦅`,
         EARTH: `⛰️`,
         PLANT: `🌿`,
-        POISON: `☠️`,
+        POISON: `🍄`,
         FIGHTING: `👊🏼`,
         METAL: `⚙️`
     }

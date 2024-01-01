@@ -18,7 +18,7 @@ class PlayMenu extends AbstractMenuCanvas {
         this.sellingUnitCards = [];
         this.summonedUnitCards = [];
         this.typeSynergy = new TypeSynergy();
-        
+
         this.sellingUnitElements = [];
         this.sellingUnitRects = [];
         this.summonedUnitElements = [];
@@ -178,6 +178,7 @@ class PlayMenu extends AbstractMenuCanvas {
 
             if (this.summonedUnitCards[i] != undefined && this.summonedUnitCards[i].summonId != undefined) {
                 this.setSummonedUnitStatsElement(i);
+                this.setTypeSynergies();
             }
 
             if (this.summonedUnitCards.length != 6) {
@@ -439,8 +440,8 @@ class PlayMenu extends AbstractMenuCanvas {
             }
 
             this.gameEngine.manaPoints -= this.rollSellingCardsCost;
-            this.setManaPointsElement(this.rollSellingCardsCost);
-        }
+            this.setManaPointsElement(this.gameEngine.manaPoints);
+        }   
         else if (this.isMouseInRect(this.gameBattleRect)) {
             console.log("Start Battle")
         }
@@ -505,8 +506,8 @@ class PlayMenu extends AbstractMenuCanvas {
                 this.setManaPointsElement(this.gameEngine.manaPoints);
 
                 this.summonedUnitStatsElements[this.constHoldingCard.summonId].style.setProperty("visibility", "hidden");
-                this.setTypeSynergies();
                 this.removeSummonedUnitCard(this.constHoldingCard.summonId);
+                this.setTypeSynergies();
                 //console.log("Sell summonedUnitCards", this.summonedUnitCards);
             }
             else if (this.constHoldingCard.isSellingCardLocked) {
@@ -648,28 +649,43 @@ class PlayMenu extends AbstractMenuCanvas {
     }
 
     setTypeSynergies() {
-        this.typeSynergy.resetAllTypesCount();
+        //Remove all elements from this.activeTypeContainer
+        while (this.activeTypeContainer.hasChildNodes()) {
+            this.activeTypeContainer.removeChild(this.activeTypeContainer.firstChild)
+        }
 
+        while (this.inactiveTypeContainer.hasChildNodes()) {
+            this.inactiveTypeContainer.removeChild(this.inactiveTypeContainer.firstChild)
+        }
+
+        this.typeSynergy.resetAllTypesCount();
+        let newTypeSynergies = [];
+        
         for (let i = 0; i < this.summonedUnitCards.length; i++) {
             if (this.summonedUnitCards[i].summonId != undefined) {
                 this.typeSynergy.addTypeCount(this.summonedUnitCards[i].type1);
                 this.typeSynergy.addTypeCount(this.summonedUnitCards[i].type2);
             }
-        }
 
-        for (let i = 0; i < this.summonedUnitCards.length; i++) {
-            if (this.summonedUnitCards[i].summonId != undefined && !this.typeSynergy.synergies.includes(this.summonedUnitCards[i].type1)) {
-                this.typeSynergy.synergies.push(this.summonedUnitCards[i].type1)
-                this.activeTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.synergies[i]));
+            if (this.summonedUnitCards[i].summonId != undefined && !newTypeSynergies.includes(this.summonedUnitCards[i].type1)) {
+                newTypeSynergies.push(this.summonedUnitCards[i].type1)
             }
 
-            if (this.summonedUnitCards[i].summonId != undefined && !this.typeSynergy.synergies.includes(this.summonedUnitCards[i].type2)) {
-                this.typeSynergy.synergies.push(this.summonedUnitCards[i].type2)
-                this.activeTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.synergies[i]));
+            if (this.summonedUnitCards[i].summonId != undefined && !newTypeSynergies.includes(this.summonedUnitCards[i].type2)) {
+                newTypeSynergies.push(this.summonedUnitCards[i].type2)
             }
         }
 
-        console.log("this.typeSynergy.synergies",this.typeSynergy.synergies);
+        this.typeSynergy.sortTypeSynergies(newTypeSynergies);
+
+        for (let i = 0; i < this.typeSynergy.activeTypeSynergies.length; i++) {
+            this.activeTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.activeTypeSynergies[i]));
+        }
+
+        for (let i = 0; i < this.typeSynergy.inactiveTypeSynergies.length; i++) {
+            this.inactiveTypeContainer.appendChild(this.typeSynergy.returnCreatedTypeElement(this.typeSynergy.inactiveTypeSynergies[i]));
+        }
+
         this.typeSynergy.printAllTypesCount();
     }
 
