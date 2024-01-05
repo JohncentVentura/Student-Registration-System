@@ -1,0 +1,46 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #1b1b32;
+    color: white;
+}
+
+main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.convert-form,
+.convert-output{
+    margin: 1rem 0;
+    border: 3px solid white;
+    width: 30%;
+}
+
+.convert-form{
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #3b3b4f;
+}
+
+.convert-output{
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #3b3b4f;
+}
+
+.convert-form label, #number, #convert-btn, #output{
+    font-size: 1.3rem;
+}
