@@ -1,0 +1,16 @@
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\bin\Debug\Student Registration System.exe.config
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\bin\Debug\Student Registration System.exe
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\bin\Debug\Student Registration System.pdb
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\bin\Debug\Student Registration System.xml
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.Form1.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.Form2.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.Form3.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.Form4.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.MainForm.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.Resources.resources
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.vbproj.GenerateResource.cache
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.vbproj.CoreCompileInputs.cache
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.exe
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.xml
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.pdb
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.vbproj.AssemblyReference.cache
