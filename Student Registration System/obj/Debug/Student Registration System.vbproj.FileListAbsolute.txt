@@ -14,3 +14,4 @@ E:\Projects for Visual Studio\Student Registration System\Student Registration S
 E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.xml
 E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.pdb
 E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student Registration System.vbproj.AssemblyReference.cache
+E:\Projects for Visual Studio\Student Registration System\Student Registration System\obj\Debug\Student_Registration_System.About.resources

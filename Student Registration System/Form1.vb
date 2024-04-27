@@ -7,16 +7,14 @@ Public Class Form1
     Dim dbdataset As New DataSet
 
     Private Sub Form1_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        Me.Hide()
-        MainForm.Show()
         MainForm.Enabled() = True
+        MainForm.Show()
+        Me.Hide()
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Text = "Student Registration"
         DisplayNorm()
-
-        'Add-ons
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
     End Sub
 

@@ -1,6 +1,6 @@
-﻿'Imports System.Data.Common
+﻿Imports System.Data.Common
 Imports System.Data.OleDb
-'Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class Form2
     Dim connectionstring As String
@@ -8,16 +8,14 @@ Public Class Form2
     Dim dbadapter As New OleDbDataAdapter
     Dim dbdataset As New DataSet
     Private Sub Form2_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        Me.Hide()
-        MainForm.Show()
         MainForm.Enabled() = True
+        MainForm.Show()
+        Me.Hide()
     End Sub
 
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Text = "Subject Registration"
         DisplayNorm()
-
-        'Add-ons
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
     End Sub
 
