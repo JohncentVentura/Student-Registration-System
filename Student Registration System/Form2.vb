@@ -7,6 +7,8 @@ Public Class Form2
     Dim dbconnection As OleDbConnection
     Dim dbadapter As New OleDbDataAdapter
     Dim dbdataset As New DataSet
+    Dim subjectCode = vbNullString
+
     Private Sub Form2_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         MainForm.Enabled() = True
         MainForm.Show()
@@ -53,6 +55,7 @@ Public Class Form2
             Label4.ForeColor = Color.Red
         End Try
     End Sub
+
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         If Button1.Text = "Add" Then
             Button1.Enabled = False
@@ -68,9 +71,10 @@ Public Class Form2
         ElseIf Button1.Text = "Save" Then
             dbconnection.Open()
             Dim dbcommand As New OleDbCommand("UPDATE Subject Set 
+                SUBJECT_CODE = '" & TextBox1.Text.Trim & "', 
                 DESCRIPTION = '" & TextBox2.Text.Trim & "', 
                 UNITS = '" & TextBox3.Text.Trim & "' 
-                WHERE SUBJECT_CODE = '" & TextBox1.Text.Trim & "' ", dbconnection)
+                WHERE SUBJECT_CODE = '" & subjectCode & "' ", dbconnection)
             dbcommand.ExecuteNonQuery()
             dbcommand.Dispose()
             dbconnection.Close()
@@ -87,6 +91,7 @@ Public Class Form2
             TextBox1.Enabled = True
             TextBox2.Enabled = True
             TextBox3.Enabled = True
+            subjectCode = TextBox1.Text.Trim 'For saving the Subject Code to be edited
         ElseIf Button2.Text = "Save" Then
             If (TextBox1.Text <> vbNullString And TextBox2.Text <> vbNullString) Then
                 dbconnection.Open()

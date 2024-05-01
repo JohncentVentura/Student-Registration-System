@@ -157,7 +157,7 @@ Partial Class Form4
         '
         Me.TextBox7.Location = New System.Drawing.Point(299, 120)
         Me.TextBox7.Name = "TextBox7"
-        Me.TextBox7.Size = New System.Drawing.Size(347, 20)
+        Me.TextBox7.Size = New System.Drawing.Size(338, 20)
         Me.TextBox7.TabIndex = 13
         '
         'Label8

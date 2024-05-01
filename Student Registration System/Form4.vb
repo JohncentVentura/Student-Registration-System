@@ -163,7 +163,7 @@ Public Class Form4
     Private Sub TextBox2_TextChanged(sender As Object, e As EventArgs) Handles TextBox2.TextChanged
         dbconnection.Open()
         dbdatasetstud.Clear()
-        dbadapter = New OleDbDataAdapter("Select * from StudInfo where STUD_ID like '" & TextBox2.Text & "%'", dbconnection) 
+        dbadapter = New OleDbDataAdapter("Select * from StudInfo where STUD_ID like '" & TextBox2.Text & "%'", dbconnection)
         dbadapter.Fill(dbdatasetstud, "StudInfo")
 
         If dbdatasetstud.Tables("Studinfo").DefaultView.Count <> 0 And TextBox2.Text <> vbNullString Then
@@ -177,8 +177,8 @@ Public Class Form4
                 TextBox4.Enabled = True
             End If
         Else
-            TextBox3.Text = vbNullString 
-            TextBox4.Enabled = False 
+            TextBox3.Text = vbNullString
+            TextBox4.Enabled = False
             dbconnection.Close()
         End If
         Exit Sub

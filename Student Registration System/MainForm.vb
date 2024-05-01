@@ -24,7 +24,7 @@
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        Me.Enabled = False
+        'Me.Enabled = False
         About.Show()
     End Sub
 End Class
