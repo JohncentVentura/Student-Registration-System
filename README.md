@@ -1,2 +1,2 @@
 # Student Registration System
-Status: In development...
+Created using Visual Basic & Microsoft Access
